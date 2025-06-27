@@ -1,19 +1,28 @@
 package org.ispw.fastridetrack.util;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class IPFetcher {
-    public static String getPublicIP() throws Exception {
-        URL url = new URL("https://api.ipify.org");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
+    private static final HttpClient CLIENT = HttpClient.newHttpClient();
 
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-            return in.readLine();
-        }
+    private IPFetcher() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
+    public static String getPublicIP() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.ipify.org"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.body();
     }
 }
+
+
 

@@ -1,5 +1,8 @@
 package org.ispw.fastridetrack.model;
 
+import org.ispw.fastridetrack.model.enumeration.PaymentMethod;
+import org.ispw.fastridetrack.model.enumeration.RideConfirmationStatus;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -17,7 +20,7 @@ public class TaxiRideConfirmation {
 
     public TaxiRideConfirmation() {}
 
-    // Costruttore completo
+    @SuppressWarnings("java:S107")
     public TaxiRideConfirmation(Integer rideID, Driver driver, Client client, Coordinate userLocation,
                                 String destination, RideConfirmationStatus status, Double estimatedFare,
                                 Double estimatedTime, PaymentMethod paymentMethod, LocalDateTime confirmationTime) {

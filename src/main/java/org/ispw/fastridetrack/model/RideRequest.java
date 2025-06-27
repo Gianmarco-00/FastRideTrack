@@ -1,5 +1,7 @@
 package org.ispw.fastridetrack.model;
 
+import org.ispw.fastridetrack.model.enumeration.PaymentMethod;
+
 public class RideRequest {
     private Integer requestId;
     private Client client;

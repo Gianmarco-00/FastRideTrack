@@ -8,12 +8,13 @@ module org.ispw.fastridetrack {
     requires org.json;
     requires com.google.gson;
     requires java.net.http;
+    requires java.desktop;
 
 
     opens org.ispw.fastridetrack to javafx.fxml;
-    opens org.ispw.fastridetrack.controller.GUIController to javafx.fxml;
+    opens org.ispw.fastridetrack.controller.guicontroller to javafx.fxml;
 
     exports org.ispw.fastridetrack;
-    exports org.ispw.fastridetrack.controller.GUIController;
+    exports org.ispw.fastridetrack.controller.guicontroller;
 }
 

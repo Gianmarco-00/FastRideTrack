@@ -2,9 +2,12 @@ package org.ispw.fastridetrack;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import org.ispw.fastridetrack.controller.ApplicationFacade;
-import org.ispw.fastridetrack.model.Session.SessionManager;
-import org.ispw.fastridetrack.controller.SceneNavigator;
+import org.ispw.fastridetrack.controller.clicontroller.DriverCLIController;
+import org.ispw.fastridetrack.controller.guicontroller.ApplicationFacade;
+import org.ispw.fastridetrack.controller.guicontroller.SceneNavigator;
+import org.ispw.fastridetrack.session.SessionManager;
+
+import static org.ispw.fastridetrack.util.ViewPath.HOMEPAGE_FXML;
 
 public class Main extends Application {
 
@@ -13,7 +16,7 @@ public class Main extends Application {
         SessionManager.init();
         SceneNavigator.setStage(primaryStage);
         SceneNavigator.setFacade(new ApplicationFacade());
-        SceneNavigator.switchTo("/org/ispw/fastridetrack/views/Homepage.fxml", "Homepage");
+        SceneNavigator.switchTo(HOMEPAGE_FXML, "Homepage");
         primaryStage.setOnCloseRequest(event -> SessionManager.getInstance().shutdown());
     }
 
@@ -24,7 +27,24 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+
+        String useCliEnv=System.getenv("USE_CLI");
+        boolean useCli = useCliEnv != null && useCliEnv.equalsIgnoreCase("true");
+        if (useCli) {
+            System.out.println("Using CLI");
+            try {
+                SessionManager.init();
+                DriverCLIController driverCLIController = new DriverCLIController();
+                driverCLIController.start();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            } finally {
+                SessionManager.getInstance().shutdown();
+            }
+        } else{
+            System.out.println("Using GUI");
+            launch(args);
+        }
     }
 }
 

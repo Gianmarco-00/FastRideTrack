@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.*?>
 
-<AnchorPane prefHeight="720" prefWidth="1280" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ispw.fastridetrack.controller.GUIController.SelectDriverGUIController">
+<AnchorPane prefHeight="720" prefWidth="1280" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ispw.fastridetrack.controller.guicontroller.SelectDriverGUIController">
 
    <!-- Immagine di sfondo -->
    <ImageView fitHeight="720.0" fitWidth="1280.0">

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ispw.fastridetrack.controller.guicontroller.HomeDriverGUIController">
+
+    <children>
+
+        <ImageView fitHeight="720.0" fitWidth="1280.0">
+            <image>
+                <Image url="@../images/DriverHome.jpg" />
+            </image>
+        </ImageView>
+
+        <Button fx:id="HomeButton" layoutX="87.0" layoutY="347.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
+
+        <Button fx:id="MyAccButton" layoutX="87.0" layoutY="389.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
+
+        <Button fx:id="currentRideButton" layoutX="87.0" layoutY="432.0" mnemonicParsing="false" onAction="#onCurrentRide" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
+
+        <Button fx:id="pendingRequestButton" layoutX="87.0" layoutY="474.0" mnemonicParsing="false" onAction="#onPendingRequests" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
+
+        <Button layoutX="87.0" layoutY="516.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
+
+        <Button layoutX="87.0" layoutY="564.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
+
+        <Button fx:id="logoutButton" layoutX="87.0" layoutY="607.0" mnemonicParsing="false" onAction="#onLogout" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
+
+        <TextField fx:id="driverUsername" editable="false" layoutX="101.0" layoutY="276.0" style="-fx-background-color: transparent;">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </TextField>
+
+        <WebView fx:id="mapWebView" layoutX="384.0" layoutY="137.0" prefHeight="539.0" prefWidth="846.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#dadada" height="198.0" layoutX="930.0" layoutY="465.0" stroke="#dadada" strokeType="INSIDE" width="289.0" />
+      <VBox alignment="TOP_LEFT" layoutX="945.0" layoutY="480.0" spacing="8.0">
+         <children>
+            <Label style="-fx-text-fill: #a0a0a0; -fx-font-size: 12px; -fx-font-weight: bold;" text="STARTING POINT" />
+            <TextField fx:id="startpointField" prefWidth="260.0" text="My current location" />
+            <Separator prefWidth="260.0" />
+            <Label style="-fx-text-fill: #a0a0a0; -fx-font-size: 12px; -fx-font-weight: bold;" text="END POINT" />
+            <TextField fx:id="destinationField" prefWidth="260.0" promptText="Destination" />
+            <Button fx:id="routeSetupButton" prefHeight="25.0" prefWidth="258.0" style="-fx-background-color: #29BBBB; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 20;" text="Setup route" />
+         </children>
+      </VBox>
+
+    </children>
+</AnchorPane>

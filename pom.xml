@@ -12,7 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
-        <sonar.projectKey>gianmarco-00_ProvaProgetto</sonar.projectKey>
+        <sonar.projectKey>Gianmarco-00_FastRideTrack</sonar.projectKey>
         <sonar.organization>gianmarco-00</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>

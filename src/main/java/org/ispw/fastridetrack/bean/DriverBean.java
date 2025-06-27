@@ -1,7 +1,7 @@
 package org.ispw.fastridetrack.bean;
 
 import org.ispw.fastridetrack.model.Driver;
-import org.ispw.fastridetrack.model.UserType;
+import org.ispw.fastridetrack.model.enumeration.UserType;
 
 
 public class DriverBean extends UserBean {
@@ -11,7 +11,7 @@ public class DriverBean extends UserBean {
     private final String affiliation;
     private final boolean available;
 
-
+    @SuppressWarnings("java:S107")
     public DriverBean(String username, String password, int userID, String name,
                       String email, String phoneNumber,
                       double latitude, double longitude,
@@ -23,7 +23,7 @@ public class DriverBean extends UserBean {
         this.affiliation = affiliation;
         this.available = available;
     }
-
+    @SuppressWarnings("java:S107")
     public DriverBean(String username, String password, int userID, String name,
                       String email, String phoneNumber,
                       CoordinateBean coordinate,

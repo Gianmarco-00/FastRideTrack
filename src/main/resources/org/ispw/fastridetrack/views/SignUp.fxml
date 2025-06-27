@@ -7,7 +7,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:controller="org.ispw.fastridetrack.controller.GUIController.SignUpGUIController"
+<AnchorPane fx:controller="org.ispw.fastridetrack.controller.guicontroller.SignUpGUIController"
             xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             prefHeight="720.0" prefWidth="1280.0">

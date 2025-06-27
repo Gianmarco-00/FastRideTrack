@@ -7,9 +7,13 @@ import java.util.Locale;
 
 public class MapHTMLGenerator {
 
+    // Costruttore privato per impedire l'istanziazione
+    private MapHTMLGenerator() {
+        throw new UnsupportedOperationException("Utility class - non deve essere istanziata");
+    }
+
     public static String generateMapHtmlString(Coordinate coordinate) throws IOException {
         String apiKey = System.getenv("GOOGLE_MAPS_API_KEY");
-
         if (apiKey == null || apiKey.isBlank()) {
             throw new IOException("Google Maps API key non trovata nelle variabili d'ambiente.");
         }
@@ -51,9 +55,9 @@ public class MapHTMLGenerator {
                 </body>
                 </html>
                 """, apiKey, coordinate.getLatitude(), coordinate.getLongitude());
-
     }
 }
+
 
 
 

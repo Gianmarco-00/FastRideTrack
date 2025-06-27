@@ -2,19 +2,18 @@ package org.ispw.fastridetrack.bean;
 
 import org.ispw.fastridetrack.model.Client;
 import org.ispw.fastridetrack.model.Coordinate;
-import org.ispw.fastridetrack.model.PaymentMethod;
-import org.ispw.fastridetrack.model.UserType;
+import org.ispw.fastridetrack.model.enumeration.PaymentMethod;
+import org.ispw.fastridetrack.model.enumeration.UserType;
 
 public class ClientBean extends UserBean {
     private final PaymentMethod paymentMethod;
-
-
+    @SuppressWarnings("java:S107")
     public ClientBean(String username, String password, Integer userID, String name,
                       String email, String phoneNumber, double latitude, double longitude, PaymentMethod paymentMethod) {
         super(username, password, UserType.CLIENT, userID, name, email, phoneNumber, latitude, longitude);
         this.paymentMethod = paymentMethod;
     }
-
+    @SuppressWarnings("java:S107")
     public ClientBean(String username, String password, int userID, String name,
                       String email, String phoneNumber,
                       CoordinateBean coordinate,

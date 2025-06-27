@@ -1,6 +1,8 @@
 package org.ispw.fastridetrack.model;
 
-public abstract class User {
+import org.ispw.fastridetrack.model.enumeration.UserType;
+
+public class User {
     private Integer userID;
     private String username;
     private String password;
@@ -13,7 +15,7 @@ public abstract class User {
     private double latitude;
     private double longitude;
 
-    public User(Integer userID, String username, String password, String name, String email,
+    protected User(Integer userID, String username, String password, String name, String email,
                 String phoneNumber, UserType userType) {
         this.userID = userID;
         this.username = username;

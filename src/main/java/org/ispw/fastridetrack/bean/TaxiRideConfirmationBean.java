@@ -1,7 +1,7 @@
 package org.ispw.fastridetrack.bean;
 
-import org.ispw.fastridetrack.model.PaymentMethod;
-import org.ispw.fastridetrack.model.RideConfirmationStatus;
+import org.ispw.fastridetrack.model.enumeration.PaymentMethod;
+import org.ispw.fastridetrack.model.enumeration.RideConfirmationStatus;
 import org.ispw.fastridetrack.model.TaxiRideConfirmation;
 
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ public class TaxiRideConfirmationBean {
     private PaymentMethod paymentMethod;
     private LocalDateTime confirmationTime;
 
-    // Costruttore completo
+    @SuppressWarnings("java:S107")
     public TaxiRideConfirmationBean(Integer rideID, DriverBean driver, ClientBean client,
                                     CoordinateBean userLocation, String destination, RideConfirmationStatus status,
                                     Double estimatedFare, Double estimatedTime, PaymentMethod paymentMethod,
@@ -35,7 +35,8 @@ public class TaxiRideConfirmationBean {
         this.confirmationTime = confirmationTime;
     }
 
-    // Getters e setters (omessi per brevità, ma da aggiungere)
+    public TaxiRideConfirmationBean() {}
+
 
     public Integer getRideID() {
         return rideID;
@@ -101,12 +102,12 @@ public class TaxiRideConfirmationBean {
         this.estimatedTime = estimatedTime;
     }
 
-    public PaymentMethod getPaymentStatus() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentStatus(PaymentMethod paymentStatus) {
-        this.paymentMethod = paymentStatus;
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
     public LocalDateTime getConfirmationTime() {
