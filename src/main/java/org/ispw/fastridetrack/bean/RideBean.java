@@ -17,6 +17,7 @@ public class RideBean {
     private RideStatus status;
 
     // Costruttore completo
+    @SuppressWarnings("java:S107")
     public RideBean(Integer rideID, ClientBean client, DriverBean driver,
                                     /*CoordinateBean userLocation,*/ String destination, LocalDateTime startTime,
                     LocalDateTime endTime, BigDecimal totalPayed, RideStatus status) {

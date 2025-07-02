@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import org.ispw.fastridetrack.bean.ClientBean;
+import org.ispw.fastridetrack.controller.applicationcontroller.ApplicationFacade;
 import org.ispw.fastridetrack.exception.FXMLLoadException;
 import org.ispw.fastridetrack.model.Client;
 import org.ispw.fastridetrack.session.SessionManager;
@@ -33,7 +34,7 @@ public class MyAccountGUIController {
         Client client = SessionManager.getInstance().getLoggedClient();
 
         if (client == null) {
-            System.err.println("Nessun client loggato.");
+            System.err.println("User session is not valid. Please log in again.");
             return;
         }
 

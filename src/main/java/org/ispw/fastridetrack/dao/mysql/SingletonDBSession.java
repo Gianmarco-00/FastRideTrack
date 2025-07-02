@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@SuppressWarnings("java:S6548")
 public class SingletonDBSession {
     private Connection connection;
 

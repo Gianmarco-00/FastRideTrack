@@ -9,6 +9,7 @@ import org.ispw.fastridetrack.model.Driver;
 import java.io.*;
 import java.util.*;
 
+@SuppressWarnings("java:S6213")
 public class DriverDAOFileSystem implements DriverDAO {
     private static final String FILE_PATH = "src/data/drivers.csv";
 

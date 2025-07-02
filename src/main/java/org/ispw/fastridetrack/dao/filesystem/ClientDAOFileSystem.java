@@ -7,8 +7,10 @@ import org.ispw.fastridetrack.model.enumeration.PaymentMethod;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("java:S6213")
 public class ClientDAOFileSystem implements ClientDAO {
     private static final String FILE_PATH = "src/data/clients.csv";
 
@@ -109,11 +111,14 @@ public class ClientDAOFileSystem implements ClientDAO {
             client.setLatitude(Double.parseDouble(tokens[7]));
             client.setLongitude(Double.parseDouble(tokens[8]));
             return client;
-        } catch (Exception ignored) {
-            return null; // righe malformate vengono ignorate
+        } catch (Exception e) {
+            System.err.println("Errore nel parsing della riga: " + Arrays.toString(tokens) + " -> " + e.getMessage());
+            return null;
         }
+
     }
 }
+
 
 
 

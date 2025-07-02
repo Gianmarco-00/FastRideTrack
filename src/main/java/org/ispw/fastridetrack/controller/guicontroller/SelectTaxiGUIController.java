@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.web.WebView;
 import org.ispw.fastridetrack.bean.*;
+import org.ispw.fastridetrack.controller.applicationcontroller.ApplicationFacade;
 import org.ispw.fastridetrack.exception.FXMLLoadException;
 import org.ispw.fastridetrack.model.Map;
 import org.ispw.fastridetrack.model.enumeration.PaymentMethod;
@@ -61,16 +62,41 @@ public class SelectTaxiGUIController implements Initializable {
     public void setFacade(ApplicationFacade facade) {
         this.facade = facade;
         try {
+            //uso Map come semplice DTO (Data Transfer Object)
             Map map = facade.loadMapAndAvailableDriversForClient();
             MapRequestBean mapRequestBean = tempMemory.getMapRequestBean();
             destinationField.setText(mapRequestBean.getDestination());
             mapView.getEngine().loadContent(map.getHtmlContent());
+
             List<AvailableDriverBean> drivers = tempMemory.getAvailableDrivers();
             driversFX.setAll(drivers != null ? drivers : List.of());
+
+            // Se la lista è vuota, mostro alert e torno alla home
+            if (drivers == null || drivers.isEmpty()) {
+                showAlertAndReturnHome("Try increasing the driver search radius.");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Errore nel caricamento della mappa o dei driver.");
+            showAlert("Error while loading map or drivers.");
         }
+    }
+
+    private void showAlertAndReturnHome(String message) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No taxis available");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+
+            try {
+                SceneNavigator.switchTo(HOMECLIENT_FXML, "Home");
+            } catch (FXMLLoadException e) {
+                e.printStackTrace();
+                showAlert("Error returning to Home screen.");
+            }
+        });
     }
 
 
@@ -108,13 +134,13 @@ public class SelectTaxiGUIController implements Initializable {
     private void onConfirmRide() {
         AvailableDriverBean selectedDriver = taxiTable.getSelectionModel().getSelectedItem();
         if (selectedDriver == null) {
-            showAlert("Seleziona un driver dalla tabella.");
+            showAlert("Please select a driver from the table.");
             return;
         }
 
         String paymentMethodStr = paymentChoiceBox.getSelectionModel().getSelectedItem();
         if (paymentMethodStr == null || paymentMethodStr.isEmpty()) {
-            showAlert("Seleziona un metodo di pagamento.");
+            showAlert("Please select a payment method.");
             return;
         }
 
@@ -122,13 +148,13 @@ public class SelectTaxiGUIController implements Initializable {
         try {
             paymentMethodEnum = PaymentMethod.valueOf(paymentMethodStr.toUpperCase());
         } catch (IllegalArgumentException e) {
-            showAlert("Metodo di pagamento non valido.");
+            showAlert("Invalid payment method.");
             return;
         }
 
         ClientBean currentClient = ClientBean.fromModel(SessionManager.getInstance().getLoggedClient());
         if (currentClient == null) {
-            showAlert("Utente non loggato o client non trovato.");
+            showAlert("User not logged in or client not found.");
             return;
         }
         try {
@@ -136,7 +162,7 @@ public class SelectTaxiGUIController implements Initializable {
             SceneNavigator.switchTo(SELECT_DRIVER_FXML, "Conferma Driver");
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Errore nella conferma della corsa.");
+            showAlert("Error while confirming the ride.");
         }
 
     }
@@ -147,13 +173,13 @@ public class SelectTaxiGUIController implements Initializable {
             SceneNavigator.switchTo(HOMECLIENT_FXML, "Home");
         } catch (FXMLLoadException e) {
             e.printStackTrace();
-            showAlert("Errore nel ritorno alla schermata Home.");
+            showAlert("Error returning to Home screen.");
         }
     }
 
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Attenzione");
+        alert.setTitle("Warning");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

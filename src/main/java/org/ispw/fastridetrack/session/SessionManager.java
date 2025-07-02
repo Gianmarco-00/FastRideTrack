@@ -4,7 +4,6 @@ import org.ispw.fastridetrack.adapter.EmailService;
 import org.ispw.fastridetrack.adapter.GmailAdapter;
 import org.ispw.fastridetrack.adapter.GoogleMapsAdapter;
 import org.ispw.fastridetrack.adapter.MapService;
-import org.ispw.fastridetrack.controller.applicationcontroller.DriverMatchingApplicationController;
 import org.ispw.fastridetrack.dao.*;
 import org.ispw.fastridetrack.dao.mysql.SingletonDBSession;
 import org.ispw.fastridetrack.model.Client;
@@ -12,6 +11,7 @@ import org.ispw.fastridetrack.model.Driver;
 import org.ispw.fastridetrack.model.Ride;
 import org.ispw.fastridetrack.model.TaxiRideConfirmation;
 
+@SuppressWarnings("java:S6548")
 public class SessionManager {
 
     private static SessionManager instance;
@@ -128,6 +128,12 @@ public class SessionManager {
             System.out.println("Connessione DB chiusa e singleton resettato.");
         }
     }
+
+    // Mi serve per fare i test
+    public static void reset() {
+        instance = null;
+    }
+
 
 }
 

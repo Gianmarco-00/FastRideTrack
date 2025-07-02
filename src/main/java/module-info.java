@@ -16,5 +16,9 @@ module org.ispw.fastridetrack {
 
     exports org.ispw.fastridetrack;
     exports org.ispw.fastridetrack.controller.guicontroller;
+    exports org.ispw.fastridetrack.session;
+    exports org.ispw.fastridetrack.controller.applicationcontroller;
+    opens org.ispw.fastridetrack.controller.applicationcontroller to javafx.fxml;
+
 }
 

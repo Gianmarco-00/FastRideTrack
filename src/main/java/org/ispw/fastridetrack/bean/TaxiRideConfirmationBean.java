@@ -35,8 +35,6 @@ public class TaxiRideConfirmationBean {
         this.confirmationTime = confirmationTime;
     }
 
-    public TaxiRideConfirmationBean() {}
-
 
     public Integer getRideID() {
         return rideID;
@@ -82,9 +80,6 @@ public class TaxiRideConfirmationBean {
         return status;
     }
 
-    public void setStatus(RideConfirmationStatus status) {
-        this.status = status;
-    }
 
     public Double getEstimatedFare() {
         return estimatedFare;
@@ -156,5 +151,6 @@ public class TaxiRideConfirmationBean {
     public void markPending() {
         this.status = RideConfirmationStatus.valueOf("PENDING");
     }
+
 }
 

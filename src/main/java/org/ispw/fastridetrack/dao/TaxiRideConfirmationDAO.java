@@ -13,4 +13,6 @@ public interface TaxiRideConfirmationDAO {
     Object findByDriverIDandStatus(int driverId, RideConfirmationStatus rideConfirmationStatus);
 }
 
-
+//Nota: Optional<TaxiRideConfirmation> indica un ritorno facoltativo,
+//      ovvero un valore che potrebbe esserci o no, e che va gestito esplicitamente
+//      per evitare errori legati a null.

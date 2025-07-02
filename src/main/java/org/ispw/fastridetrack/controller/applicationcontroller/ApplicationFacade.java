@@ -1,8 +1,7 @@
-package org.ispw.fastridetrack.controller.guicontroller;
+package org.ispw.fastridetrack.controller.applicationcontroller;
 
 import jakarta.mail.MessagingException;
 import org.ispw.fastridetrack.bean.*;
-import org.ispw.fastridetrack.controller.applicationcontroller.*;
 import org.ispw.fastridetrack.adapter.GoogleMapsAdapter;
 import org.ispw.fastridetrack.exception.*;
 import org.ispw.fastridetrack.model.*;
@@ -44,19 +43,11 @@ public class ApplicationFacade {
         return mapAC;
     }
 
-
     public boolean login(String username, String password) throws ClientDAOException, DriverDAOException {
-        // Provo login client
-        if (loginAC.validateClientCredentials(username, password, UserType.CLIENT)) {
-            return true;
-        }
-        // Provo login driver
-        if (loginAC.validateDriverCredentials(username, password, UserType.DRIVER)) {
-            return true;
-        }
-        // Nessuno ha validato
-        return false;
+        return loginAC.validateClientCredentials(username, password, UserType.CLIENT) ||
+                loginAC.validateDriverCredentials(username, password, UserType.DRIVER);
     }
+
 
     public UserType getLoggedUserType() {
         if (SessionManager.getInstance().getLoggedClient() != null) return UserType.CLIENT;
@@ -64,13 +55,12 @@ public class ApplicationFacade {
         return null;
     }
 
-
     public String processRideRequestAndReturnMapHtml(RideRequestBean rideBean, MapRequestBean mapBean) throws RideRequestSaveException, MapServiceException {
         driverMatchingAC.saveRideRequest(rideBean);
         return mapAC.showMap(mapBean).getHtmlContent();
     }
 
-    public void confirmRideRequest(AvailableDriverBean selectedDriver, PaymentMethod method) throws Exception {
+    public void confirmRideRequest(AvailableDriverBean selectedDriver, PaymentMethod method) throws RideRequestSaveException, DriverDAOException {
         MapRequestBean mapRequestBean = TemporaryMemory.getInstance().getMapRequestBean();
         ClientBean currentClient = ClientBean.fromModel(SessionManager.getInstance().getLoggedClient());
 
@@ -211,9 +201,8 @@ public class ApplicationFacade {
         currentRideManagementAC.initializeCurrentRide(confirmationBean);
     }
 
-    public void rejectRideConfirmation(int rideID, int driverID) throws DriverDAOException {
+    public void rejectRideConfirmation(int rideID, int driverID)  {
         rideConfirmationAC.rejectRideConfirmation(rideID, driverID);
     }
-
 
 }

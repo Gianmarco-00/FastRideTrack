@@ -2,8 +2,8 @@ package org.ispw.fastridetrack;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import org.ispw.fastridetrack.controller.clicontroller.DriverCLIController;
-import org.ispw.fastridetrack.controller.guicontroller.ApplicationFacade;
+import org.ispw.fastridetrack.controller.clicontroller.ClientCliController;
+import org.ispw.fastridetrack.controller.applicationcontroller.ApplicationFacade;
 import org.ispw.fastridetrack.controller.guicontroller.SceneNavigator;
 import org.ispw.fastridetrack.session.SessionManager;
 
@@ -34,8 +34,8 @@ public class Main extends Application {
             System.out.println("Using CLI");
             try {
                 SessionManager.init();
-                DriverCLIController driverCLIController = new DriverCLIController();
-                driverCLIController.start();
+                ClientCliController clientCliController = new ClientCliController();
+                clientCliController.start();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             } finally {

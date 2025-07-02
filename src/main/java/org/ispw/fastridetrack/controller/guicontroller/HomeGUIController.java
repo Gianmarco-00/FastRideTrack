@@ -10,6 +10,7 @@ import org.ispw.fastridetrack.bean.ClientBean;
 import org.ispw.fastridetrack.bean.MapRequestBean;
 import org.ispw.fastridetrack.bean.RideRequestBean;
 import org.ispw.fastridetrack.bean.CoordinateBean;
+import org.ispw.fastridetrack.controller.applicationcontroller.ApplicationFacade;
 import org.ispw.fastridetrack.exception.FXMLLoadException;
 import org.ispw.fastridetrack.model.Client;
 import org.ispw.fastridetrack.model.enumeration.PaymentMethod;
@@ -25,7 +26,7 @@ import static org.ispw.fastridetrack.util.ViewPath.*;
 
 public class HomeGUIController implements Initializable {
 
-    @FXML public Button checkRiderButton;
+    @FXML public Button checkDriverButton;
     @FXML public Button myAccountButton;
     @FXML public Button myWalletButton;
     @FXML public Button logoutButton;
@@ -58,15 +59,15 @@ public class HomeGUIController implements Initializable {
     private void displayUserName() {
         Client client = SessionManager.getInstance().getLoggedClient();
         if (client != null) {
-            welcomeLabel.setText("Benvenuto, " + client.getName());
+            welcomeLabel.setText("Welcome, " + client.getName());
         }
     }
 
     private void showGPSAlert() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("GPS");
-        alert.setHeaderText("Attiva il GPS");
-        alert.setContentText("Per continuare, attiva il GPS del dispositivo.");
+        alert.setHeaderText("Enable GPS");
+        alert.setContentText("Please enable the device GPS to continue.");
         alert.showAndWait();
     }
 
@@ -106,19 +107,19 @@ public class HomeGUIController implements Initializable {
                         engine.setJavaScriptEnabled(true);
                         engine.loadContent(html);
                     } catch (Exception e) {
-                        showAlert("Errore nella generazione della mappa dinamica.");
+                        showAlert("Error generating dynamic map.");
                     }
                 });
 
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // re-imposto il flag
+                Thread.currentThread().interrupt(); // re-set interrupt flag
                 Platform.runLater(() -> {
-                    showAlert("Operazione interrotta. Verrà caricata la mappa di default.");
+                    showAlert("Operation interrupted. Loading default map.");
                     loadMapWithDefaultLocation();
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    showAlert("Impossibile recuperare la posizione. Verrà caricata la mappa di default.");
+                    showAlert("Unable to retrieve location. Loading default map.");
                     loadMapWithDefaultLocation();
                 });
             }
@@ -134,32 +135,32 @@ public class HomeGUIController implements Initializable {
             if (url != null) {
                 engine.load(url.toExternalForm());
             } else {
-                showAlert("File map.html non trovato nelle risorse.");
+                showAlert("map.html resource file not found.");
             }
         });
     }
 
     @FXML
-    private void onCheckRider() throws FXMLLoadException {
+    private void onCheckDriver() throws FXMLLoadException {
         String destination = destinationField.getText();
 
         if (destination == null || destination.trim().isEmpty()) {
             destinationField.setStyle("-fx-border-color: red;");
-            showAlert("Inserisci una destinazione valida.");
+            showAlert("Please enter a valid destination.");
             return;
         } else {
-            destinationField.setStyle(""); // Rimuovo il bordo rosso se corretto
+            destinationField.setStyle(""); // Remove red border if valid
         }
 
         int radiusKm = convertRangeToInt(rangeChoiceBox.getValue());
         if (radiusKm == -1) {
-            showAlert("Raggio selezionato non valido.");
+            showAlert("Selected radius is not valid.");
             return;
         }
 
         Client loggedClient = SessionManager.getInstance().getLoggedClient();
         if (loggedClient == null) {
-            showAlert("Sessione utente non valida. Effettua nuovamente il login.");
+            showAlert("User session is not valid. Please log in again.");
             SceneNavigator.switchTo(HOMEPAGE_FXML, "Homepage");
             return;
         }
@@ -168,7 +169,7 @@ public class HomeGUIController implements Initializable {
                 ? currentLocation.getLatitude() + "," + currentLocation.getLongitude()
                 : "";
 
-        // Creo i Bean
+        // Create Beans
         RideRequestBean rideRequestBean = new RideRequestBean(currentLocation, destination.trim(), radiusKm, PaymentMethod.CASH);
         rideRequestBean.setClient(ClientBean.fromModel(loggedClient));
         rideRequestBean.setPickupLocation(pickupLocationStr);
@@ -177,30 +178,29 @@ public class HomeGUIController implements Initializable {
         MapRequestBean mapRequestBean = new MapRequestBean(currentLocation, destination.trim(), radiusKm);
 
         try {
-            // Uso il Facade per salvare la richiesta e ottenere la mappa
+            // Use Facade to save request and get map
             String html = facade.processRideRequestAndReturnMapHtml(rideRequestBean, mapRequestBean);
 
             if (html == null || html.isBlank()) {
-                showAlert("Errore nel calcolo o visualizzazione del percorso.");
+                showAlert("Error calculating or displaying the route.");
                 return;
             }
 
             mapWebView.getEngine().loadContent(html);
 
-            // Salvo i dati temporanei e navigo alla schermata successiva
+            // Save temporary data and navigate to next screen
             TemporaryMemory.getInstance().setMapRequestBean(mapRequestBean);
-            SceneNavigator.switchTo(SELECT_TAXI_FXML, "Seleziona Taxi");
+            SceneNavigator.switchTo(SELECT_TAXI_FXML, "Select Taxi");
 
         } catch (Exception e) {
-            e.printStackTrace();
-            showAlert("Errore durante l'elaborazione della richiesta.");
+            showAlert("Error processing the request.");
         }
     }
 
 
     private void showAlert(String msg) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Attenzione");
+        alert.setTitle("Warning");
         alert.setContentText(msg);
         alert.showAndWait();
     }

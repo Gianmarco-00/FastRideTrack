@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import org.ispw.fastridetrack.controller.applicationcontroller.ApplicationFacade;
 import org.ispw.fastridetrack.exception.FXMLLoadException;
 import org.ispw.fastridetrack.exception.SceneSwitchException;
 
@@ -59,23 +60,23 @@ public class MyWalletGUIController {
         if (checkBoxCard.isSelected()) {
             showAddCardDialog();
         } else if (checkBoxCash.isSelected()) {
-            System.out.println("Pagamento in contanti selezionato.");
+            System.out.println("Cash payment selected.");
             SceneNavigator.switchTo(HOMECLIENT_FXML, "Home");
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Attenzione");
-            alert.setHeaderText("Metodo di pagamento non selezionato");
-            alert.setContentText("Per favore seleziona un metodo di pagamento.");
+            alert.setTitle("Warning");
+            alert.setHeaderText("Payment method not selected");
+            alert.setContentText("Please select a payment method.");
             alert.showAndWait();
         }
     }
 
     private void showAddCardDialog() {
         Dialog<Void> dialog = new Dialog<>();
-        dialog.setTitle("Aggiungi Carta");
-        dialog.setHeaderText("Inserisci i dati della tua carta");
+        dialog.setTitle("Add Card");
+        dialog.setHeaderText("Enter your card details");
 
-        ButtonType addButtonType = new ButtonType("Aggiungi", ButtonBar.ButtonData.OK_DONE);
+        ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
@@ -84,10 +85,10 @@ public class MyWalletGUIController {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         TextField cardNumber = new TextField();
-        cardNumber.setPromptText("Numero carta");
+        cardNumber.setPromptText("Card Number");
 
         TextField cardHolder = new TextField();
-        cardHolder.setPromptText("Intestatario");
+        cardHolder.setPromptText("Cardholder");
 
         TextField expiryDate = new TextField();
         expiryDate.setPromptText("MM/YY");
@@ -95,11 +96,11 @@ public class MyWalletGUIController {
         PasswordField cvv = new PasswordField();
         cvv.setPromptText("CVV");
 
-        grid.add(new Label("Numero carta:"), 0, 0);
+        grid.add(new Label("Card Number:"), 0, 0);
         grid.add(cardNumber, 1, 0);
-        grid.add(new Label("Intestatario:"), 0, 1);
+        grid.add(new Label("Cardholder:"), 0, 1);
         grid.add(cardHolder, 1, 1);
-        grid.add(new Label("Scadenza:"), 0, 2);
+        grid.add(new Label("Expiry Date:"), 0, 2);
         grid.add(expiryDate, 1, 2);
         grid.add(new Label("CVV:"), 0, 3);
         grid.add(cvv, 1, 3);
@@ -136,18 +137,17 @@ public class MyWalletGUIController {
                     return null;
                 }
 
-                System.out.println("Carta aggiunta:");
-                System.out.println("Numero: " + cardNumber.getText());
-                System.out.println("Intestatario: " + cardHolder.getText());
-                System.out.println("Scadenza: " + expiryDate.getText());
+                System.out.println("Card added:");
+                System.out.println("Number: " + cardNumber.getText());
+                System.out.println("Holder: " + cardHolder.getText());
+                System.out.println("Expiry: " + expiryDate.getText());
                 System.out.println("CVV: " + cvv.getText());
 
                 try {
                     SceneNavigator.switchTo(HOMECLIENT_FXML, "Home");
                 } catch (FXMLLoadException e) {
-                    throw new SceneSwitchException("Errore nel cambio scena verso Home", e);
+                    throw new SceneSwitchException("Error switching to Home scene", e);
                 }
-
             }
             return null;
         });
@@ -157,20 +157,19 @@ public class MyWalletGUIController {
 
     private String validateCardInputs(String number, String holder, String expiry, String cvv) {
         if (!isCardNumberValid(number)) {
-            return "Numero carta non valido. Deve contenere solo cifre (13-19)!";
+            return "Invalid card number. It must contain only digits (13-19)!";
         }
         if (holder == null || holder.trim().isEmpty()) {
-            return "Intestatario non può essere vuoto!";
+            return "Cardholder cannot be empty!";
         }
         if (!isExpiryDateValid(expiry)) {
-            return "Data di scadenza non valida o scaduta! Usa MM/YY.";
+            return "Invalid or expired date! Use MM/YY.";
         }
         if (!isCvvValid(cvv)) {
-            return "CVV non valido! Deve essere di 3 o 4 cifre.";
+            return "Invalid CVV! It must be 3 or 4 digits.";
         }
         return null;
     }
-
 
     // Funzione per validare numero carta (solo cifre, lunghezza 13-19)
     private boolean isCardNumberValid(String number) {
@@ -201,13 +200,13 @@ public class MyWalletGUIController {
     // Metodo per mostrare alert di errore
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Errore di validazione");
+        alert.setTitle("Validation Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 }
+
 
 
 

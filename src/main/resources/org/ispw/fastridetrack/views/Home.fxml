@@ -32,7 +32,7 @@
                   <Label style="-fx-text-fill: #a0a0a0; -fx-font-size: 12px; -fx-font-weight: bold;" text="DROP-OFF" />
                   <TextField fx:id="destinationField" prefWidth="260.0" promptText="Inserisci destinazione" />
 
-                  <Button fx:id="checkRiderButton" onAction="#onCheckRider" prefHeight="25.0" prefWidth="258.0" style="-fx-background-color: #ffd700; -fx-font-weight: bold; -fx-text-fill: black; -fx-background-radius: 20;" text="Check Driver" />
+                  <Button fx:id="checkDriverButton" onAction="#onCheckDriver" prefHeight="25.0" prefWidth="258.0" style="-fx-background-color: #ffd700; -fx-font-weight: bold; -fx-text-fill: black; -fx-background-radius: 20;" text="Check Driver" />
                </children>
             </VBox>
          </children>

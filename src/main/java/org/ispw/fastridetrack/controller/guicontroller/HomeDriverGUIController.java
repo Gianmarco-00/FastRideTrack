@@ -10,6 +10,7 @@ import javafx.scene.web.WebView;
 import org.ispw.fastridetrack.bean.CoordinateBean;
 import org.ispw.fastridetrack.bean.DriverBean;
 import org.ispw.fastridetrack.bean.RideBean;
+import org.ispw.fastridetrack.controller.applicationcontroller.ApplicationFacade;
 import org.ispw.fastridetrack.exception.FXMLLoadException;
 import org.ispw.fastridetrack.model.TemporaryMemory;
 import org.ispw.fastridetrack.session.SessionManager;

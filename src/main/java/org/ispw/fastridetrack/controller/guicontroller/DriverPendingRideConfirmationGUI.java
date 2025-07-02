@@ -8,6 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.ispw.fastridetrack.bean.DriverBean;
 import org.ispw.fastridetrack.bean.TaxiRideConfirmationBean;
+import org.ispw.fastridetrack.controller.applicationcontroller.ApplicationFacade;
 import org.ispw.fastridetrack.exception.DriverDAOException;
 import org.ispw.fastridetrack.exception.FXMLLoadException;
 import org.ispw.fastridetrack.model.TemporaryMemory;
@@ -83,11 +84,7 @@ public class DriverPendingRideConfirmationGUI {
     @FXML
     public void onReject() {
         TaxiRideConfirmationBean confirmation = TemporaryMemory.getInstance().getRideConfirmation();
-        try {
-            facade.rejectRideConfirmation(confirmation.getRideID(), confirmation.getDriver().getUserID());
-        } catch (DriverDAOException e) {
-            throw new RuntimeException(e);
-        }
+        facade.rejectRideConfirmation(confirmation.getRideID(), confirmation.getDriver().getUserID());
 
         buttonBox.setVisible(false);
         rejectBox.setVisible(true);

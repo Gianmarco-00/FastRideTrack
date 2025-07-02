@@ -5,6 +5,7 @@ import org.ispw.fastridetrack.dao.DriverDAO;
 import org.ispw.fastridetrack.dao.TaxiRideConfirmationDAO;
 import org.ispw.fastridetrack.exception.DriverDAOException;
 import org.ispw.fastridetrack.exception.TaxiRidePersistenceException;
+import org.ispw.fastridetrack.exception.TaxiRideRetrievalException;
 import org.ispw.fastridetrack.model.*;
 import org.ispw.fastridetrack.model.Driver;
 import org.ispw.fastridetrack.model.enumeration.PaymentMethod;
@@ -138,40 +139,48 @@ public class TaxiRideConfirmationDAOMYSQL implements TaxiRideConfirmationDAO {
 
     @Override
     public List<TaxiRideConfirmation> findByDriverIDandStatus(int driverID, RideConfirmationStatus status) {
-        List<TaxiRideConfirmation> requests = new ArrayList<TaxiRideConfirmation>();
-        ClientDAOMYSQL clientDAO = new ClientDAOMYSQL(connection);
-        //RideRequestDAOMYSQL rideRequest = new RideRequestDAOMYSQL(connection,  clientDAO);
-        DriverDAOMYSQL driverDAO = new DriverDAOMYSQL(connection);
-
-        String sql = "SELECT * FROM taxi_rides WHERE driverID = ? AND rideConfirmationStatus = ? ORDER BY confirmationTime ASC";
+        String sql = """
+        SELECT rideID, clientID, driverID, destination, rideConfirmationStatus,
+               confirmationTime, estimatedFare, estimatedTime, paymentMethod
+        FROM taxi_rides
+        WHERE driverID = ? AND rideConfirmationStatus = ?
+        ORDER BY confirmationTime ASC
+        """;
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, driverID);
-            stmt.setString(2, String.valueOf(status));
+            stmt.setString(2, status.name());
 
             try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    TaxiRideConfirmation request = new TaxiRideConfirmation();
-                    request.setRideID(rs.getInt("rideID"));
-                    request.setClient(clientDAO.findById(rs.getInt("clientID")));
-                    request.setDriver(driverDAO.findById(rs.getInt("driverID")));
-                    request.setDestination(rs.getString("destination"));
-                    request.setStatus(RideConfirmationStatus.valueOf(rs.getString("rideConfirmationStatus")));
-                    request.setConfirmationTime(rs.getTimestamp("confirmationTime").toLocalDateTime());
-                    request.setEstimatedFare(rs.getDouble("estimatedFare"));
-                    request.setEstimatedTime(rs.getDouble("estimatedTime"));
-                    request.setPaymentMethod(PaymentMethod.valueOf(rs.getString("paymentMethod")));
-
-                    requests.add(request);
-                }
-            } catch (DriverDAOException e) {
-                throw new RuntimeException(e);
+                return extractRideRequestsFromResultSet(rs);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException("Errore nel recupero delle ride request", e);
+        } catch (SQLException | DriverDAOException e) {
+            throw new TaxiRideRetrievalException("Errore nel recupero delle ride request per driverID=" + driverID + " e status=" + status, e);
+        }
+    }
+
+    private List<TaxiRideConfirmation> extractRideRequestsFromResultSet(ResultSet rs) throws SQLException, DriverDAOException {
+        List<TaxiRideConfirmation> requests = new ArrayList<>();
+        ClientDAO clientDAO = new ClientDAOMYSQL(connection);
+        DriverDAO driverDAO = new DriverDAOMYSQL(connection);
+
+        while (rs.next()) {
+            TaxiRideConfirmation request = new TaxiRideConfirmation();
+            request.setRideID(rs.getInt("rideID"));
+            request.setClient(clientDAO.findById(rs.getInt("clientID")));
+            request.setDriver(driverDAO.findById(rs.getInt("driverID")));
+            request.setDestination(rs.getString("destination"));
+            request.setStatus(RideConfirmationStatus.valueOf(rs.getString("rideConfirmationStatus")));
+            request.setConfirmationTime(rs.getTimestamp("confirmationTime").toLocalDateTime());
+            request.setEstimatedFare(rs.getDouble("estimatedFare"));
+            request.setEstimatedTime(rs.getDouble("estimatedTime"));
+            request.setPaymentMethod(PaymentMethod.valueOf(rs.getString("paymentMethod")));
+            requests.add(request);
         }
         return requests;
     }
+
+
 }
 
 
