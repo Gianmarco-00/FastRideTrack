@@ -25,13 +25,23 @@
          </font>
       </Label>
 
-      <Label fx:id="clientNameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="699.0" layoutY="266.0" prefHeight="35.0" prefWidth="259.0">
+      <Label fx:id="clientNameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="699.0" layoutY="234.0" prefHeight="35.0" prefWidth="259.0">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
+      <Button fx:id="currentRideButton" layoutX="87.0" layoutY="432.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="currentRideButton1" layoutX="87.0" layoutY="389.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="homeButton" layoutX="87.0" layoutY="346.0" mnemonicParsing="false" onAction="#onHomeDriver" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="pendingConfirmationButton" layoutX="87.0" layoutY="474.0" mnemonicParsing="false" onAction="#onPendingConfirmation" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
 
-      <VBox fx:id="rideInitiatedBox" alignment="TOP_CENTER" layoutX="509.0" layoutY="382.0" prefHeight="174.0" prefWidth="638.0" spacing="20.0">
+      <Button fx:id="viewLocationButton" layoutX="704.0" layoutY="614.0" mnemonicParsing="false" onAction="#onSetupLocationOnMap" prefHeight="30.0" prefWidth="249.0" style="-fx-background-color: #29bbbb;" text="View client location on map" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+
+      <VBox fx:id="rideInitiatedBox" alignment="TOP_CENTER" layoutX="509.0" layoutY="463.0" prefHeight="133.0" prefWidth="638.0" spacing="20.0">
 
          <children>
             <Label fx:id="rideInitiatedLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="35.0" prefWidth="290.0" style="-fx-background-radius: 20; -fx-background-color: #d9d9d9;" text="Ride initiated">
@@ -45,17 +55,11 @@
                   <Font size="18.0" />
                </font>
             </TextArea>
-
-            <Button fx:id="setupClientLocationButton" mnemonicParsing="false" onAction="#onSetupClientLocationOnMap" prefHeight="30.0" prefWidth="249.0" style="-fx-background-color: #29bbbb;" text="Setup client location on the map" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Button>
          </children>
 
       </VBox>
 
-      <VBox fx:id="clientLocatedBox" alignment="TOP_CENTER" layoutX="509.0" layoutY="382.0" prefHeight="174.0" prefWidth="638.0" spacing="20.0" visible="false">
+      <VBox fx:id="clientLocatedBox" alignment="TOP_CENTER" layoutX="509.0" layoutY="463.0" prefHeight="130.0" prefWidth="638.0" spacing="20.0" visible="false">
 
          <children>
             <Label fx:id="destinationLabel11" alignment="CENTER" contentDisplay="CENTER" prefHeight="35.0" prefWidth="290.0" style="-fx-background-radius: 20; -fx-background-color: #d9d9d9;" text="Client found">
@@ -69,19 +73,52 @@
                   <Font size="18.0" />
                </font>
             </TextArea>
-
-            <Button fx:id="confirmDriverPickUpButton" mnemonicParsing="false" onAction="#onSetupClientLocationOnMap" prefHeight="30.0" prefWidth="249.0" style="-fx-background-color: #29bbbb;" text="Confirm driver picked up" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Button>
          </children>
 
       </VBox>
-      <Button fx:id="currentRideButton" layoutX="87.0" layoutY="432.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
-      <Button fx:id="currentRideButton1" layoutX="87.0" layoutY="389.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
-      <Button fx:id="homeButton" layoutX="87.0" layoutY="346.0" mnemonicParsing="false" onAction="#onHomeDriver" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
-      <Button fx:id="pendingConfirmationButton" layoutX="87.0" layoutY="474.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
+      <VBox fx:id="rideStartedBox" alignment="TOP_CENTER" layoutX="509.0" layoutY="463.0" prefHeight="130.0" prefWidth="638.0" spacing="20.0" visible="false">
+         <children>
+            <Label fx:id="rideInitiatedLabel1" alignment="CENTER" contentDisplay="CENTER" prefHeight="35.0" prefWidth="290.0" style="-fx-background-radius: 20; -fx-background-color: #d9d9d9;" text="Ride started">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <TextArea cacheShape="false" editable="false" prefHeight="66.0" prefWidth="638.0" style="-fx-background-color: transparent; -fx-focus-color: transparent; -fx-faint-focus-color: transparent; fx-control-inner-background: transparent; -fx-background-insets: 0;" text="You have reached the client, now you can view the available route to&#10;the destination">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </TextArea>
+         </children>
+      </VBox>
+      <VBox fx:id="rideFinishedBox" alignment="TOP_CENTER" layoutX="509.0" layoutY="463.0" prefHeight="130.0" prefWidth="638.0" spacing="20.0" visible="false">
+         <children>
+            <Label fx:id="rideInitiatedLabel2" alignment="CENTER" contentDisplay="CENTER" prefHeight="35.0" prefWidth="290.0" style="-fx-background-radius: 20; -fx-background-color: #d9d9d9;" text="Ride Finished">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <TextArea cacheShape="false" editable="false" prefHeight="66.0" prefWidth="638.0" style="-fx-background-color: transparent; -fx-focus-color: transparent; -fx-faint-focus-color: transparent; fx-control-inner-background: transparent; -fx-background-insets: 0;" text="You have just finished the current ride">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </TextArea>
+         </children>
+      </VBox>
+      <Label fx:id="driverNameLabel" layoutX="87.0" layoutY="270.0" prefHeight="27.0" prefWidth="154.0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="phoneNumberLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="699.0" layoutY="318.0" prefHeight="35.0" prefWidth="259.0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="emailLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="699.0" layoutY="371.0" prefHeight="35.0" prefWidth="259.0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
 
    </children>
 </AnchorPane>

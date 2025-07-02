@@ -37,7 +37,7 @@ public class PersistenceSessionFactory implements SessionFactory {
 
     @Override
     public RideDAO createRideDAO() {
-        return new  RideDAOMYSQL(dbSession.getConnection());
+        return new RideDAOMYSQL(dbSession.getConnection());
     }
 }
 

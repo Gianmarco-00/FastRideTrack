@@ -27,7 +27,7 @@ public class InMemorySessionFactory implements SessionFactory {
 
     @Override
     public RideDAO createRideDAO() {
-        return null;
+        return new RideDAOInMemory();
     }
 }
 

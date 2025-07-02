@@ -11,7 +11,6 @@ public class EmailBean {
         this.body = body;
     }
 
-    public EmailBean() {}
 
     public String getRecipient() { return recipient; }
     public void setRecipient(String recipient) { this.recipient = recipient; }

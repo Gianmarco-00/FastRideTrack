@@ -8,7 +8,8 @@ import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-//Questa classe funge da ConcreteSubject
+//Questa classe funge da ConcreteSubject ed è un Singleton
+@SuppressWarnings("java:S6548")
 public class TemporaryMemory implements Subject {
 
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -33,7 +34,7 @@ public class TemporaryMemory implements Subject {
         pcs.removePropertyChangeListener(listener);
     }
 
-    // --- proprietà osservabili ---
+    // --- subjectStates: proprietà osservabili ---
 
     private MapRequestBean mapRequestBean;
     public void setMapRequestBean(MapRequestBean bean) {

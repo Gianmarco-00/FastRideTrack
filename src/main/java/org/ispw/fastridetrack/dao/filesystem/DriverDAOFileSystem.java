@@ -3,12 +3,14 @@ package org.ispw.fastridetrack.dao.filesystem;
 import org.ispw.fastridetrack.bean.AvailableDriverBean;
 import org.ispw.fastridetrack.bean.DriverBean;
 import org.ispw.fastridetrack.dao.DriverDAO;
+import org.ispw.fastridetrack.exception.DriverDAOException;
 import org.ispw.fastridetrack.model.Coordinate;
 import org.ispw.fastridetrack.model.Driver;
 
 import java.io.*;
 import java.util.*;
 
+@SuppressWarnings("java:S6213")
 public class DriverDAOFileSystem implements DriverDAO {
     private static final String FILE_PATH = "src/data/drivers.csv";
 
@@ -88,8 +90,45 @@ public class DriverDAOFileSystem implements DriverDAO {
     }
 
     @Override
-    public void updateAvailability(int driverId, boolean isAvailable) {
+    public void updateAvailability(int driverId, boolean isAvailable) throws DriverDAOException {
+        List<Driver> allDrivers = getAllDrivers();
+        boolean updated = false;
 
+        for (Driver driver : allDrivers) {
+            if (driver.getUserID() == driverId) {
+                driver.setAvailable(isAvailable);
+                updated = true;
+                break;
+            }
+        }
+
+        if (!updated) {
+            throw new DriverDAOException("Driver con ID " + driverId + " non trovato.");
+        }
+
+        // Sovrascrive tutto il file con la nuova lista aggiornata
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            for (Driver driver : allDrivers) {
+                String record = String.join(";",
+                        String.valueOf(driver.getUserID()),
+                        driver.getUsername(),
+                        driver.getPassword(),
+                        driver.getName(),
+                        driver.getEmail(),
+                        driver.getPhoneNumber(),
+                        String.valueOf(driver.getLatitude()),
+                        String.valueOf(driver.getLongitude()),
+                        driver.getVehicleInfo(),
+                        driver.getVehiclePlate(),
+                        driver.getAffiliation(),
+                        driver.isAvailable() ? "1" : "0"
+                );
+                writer.write(record);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            throw new DriverDAOException("Errore durante la scrittura del file driver.csv", e);
+        }
     }
 
     private List<Driver> getAllDrivers() {
@@ -123,30 +162,6 @@ public class DriverDAOFileSystem implements DriverDAO {
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
-
-    /*
-    @Override
-    public void updateAvaiability(Driver updatedDriver) {
-        List<Driver> drivers = getAllDrivers();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (Driver d : drivers) {
-                if (d.getUserID() == updatedDriver.getUserID()) {
-                    d = updatedDriver;
-                }
-                writer.write(String.join(",",
-                        String.valueOf(d.getUserID()), d.getUsername(), d.getPassword(), d.getName(),
-                        d.getEmail(), d.getPhoneNumber(),
-                        String.valueOf(d.getLatitude()), String.valueOf(d.getLongitude()),
-                        d.getVehicleInfo(), d.getVehiclePlate(), d.getAffiliation(),
-                        d.isAvailable() ? "1" : "0"));
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            System.err.println("Errore nell'aggiornamento del driver: " + e.getMessage());
-        }
-    }
-    */
-
 
 }
 

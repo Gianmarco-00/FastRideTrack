@@ -14,7 +14,6 @@ public class DriverAssignmentBean {
         this.driver = driver;
     }
 
-    public DriverAssignmentBean() {}
 
     public Integer getRequestID() {
         return requestID;

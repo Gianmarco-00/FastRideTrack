@@ -22,12 +22,33 @@ public class CoordinateBean {
         return latitude;
     }
 
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
     public double getLongitude() {
         return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public Coordinate toModel() {
         return new Coordinate(latitude, longitude);
     }
+
+    public static CoordinateBean fromModel(Coordinate coordinate) {
+        if (coordinate != null) {
+            return new CoordinateBean(coordinate.getLatitude(), coordinate.getLongitude());
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return latitude + "," + longitude;
+    }
+
 }
 

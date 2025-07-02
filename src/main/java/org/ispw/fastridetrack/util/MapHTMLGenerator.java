@@ -14,6 +14,7 @@ public class MapHTMLGenerator {
 
     public static String generateMapHtmlString(Coordinate coordinate) throws IOException {
         String apiKey = System.getenv("GOOGLE_MAPS_API_KEY");
+
         if (apiKey == null || apiKey.isBlank()) {
             throw new IOException("Google Maps API key non trovata nelle variabili d'ambiente.");
         }
@@ -57,7 +58,6 @@ public class MapHTMLGenerator {
                 """, apiKey, coordinate.getLatitude(), coordinate.getLongitude());
     }
 }
-
 
 
 

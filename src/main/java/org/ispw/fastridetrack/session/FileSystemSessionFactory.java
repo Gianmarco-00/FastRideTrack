@@ -1,10 +1,7 @@
 package org.ispw.fastridetrack.session;
 
 import org.ispw.fastridetrack.dao.*;
-import org.ispw.fastridetrack.dao.filesystem.ClientDAOFileSystem;
-import org.ispw.fastridetrack.dao.filesystem.DriverDAOFileSystem;
-import org.ispw.fastridetrack.dao.filesystem.RideRequestDAOFileSystem;
-import org.ispw.fastridetrack.dao.filesystem.TaxiRideConfirmationDAOFileSystem;
+import org.ispw.fastridetrack.dao.filesystem.*;
 
 public class FileSystemSessionFactory implements SessionFactory {
 
@@ -40,7 +37,7 @@ public class FileSystemSessionFactory implements SessionFactory {
 
     @Override
     public RideDAO createRideDAO() {
-        return null;
+        return new RideDAOFileSystem(clientDAO, driverDAO);
     }
 }
 

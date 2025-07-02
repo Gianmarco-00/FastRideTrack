@@ -11,10 +11,8 @@ import org.ispw.fastridetrack.model.TaxiRideConfirmation;
 import java.io.*;
 import java.nio.file.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TaxiRideConfirmationDAOFileSystem implements TaxiRideConfirmationDAO {
 
@@ -87,8 +85,11 @@ public class TaxiRideConfirmationDAOFileSystem implements TaxiRideConfirmationDA
     }
 
     @Override
-    public Object findByDriverIDandStatus(int driverId, RideConfirmationStatus rideConfirmationStatus) {
-        return null;
+    public List<TaxiRideConfirmation> findByDriverIDandStatus(int driverID, RideConfirmationStatus status) {
+        return findAll().stream()
+                .filter(ride -> ride.getDriver().getUserID() == driverID && ride.getStatus() == status)
+                .sorted(Comparator.comparing(TaxiRideConfirmation::getConfirmationTime))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private List<TaxiRideConfirmation> findAll() {
@@ -102,7 +103,7 @@ public class TaxiRideConfirmationDAOFileSystem implements TaxiRideConfirmationDA
                 }
             }
         } catch (IOException e) {
-            throw new TaxiRidePersistenceException("Errore nella lettura del file taxi_rides.csv", e);
+            throw new TaxiRidePersistenceException("Error reading the file taxi_rides.csv", e);
         }
         return list;
     }
@@ -116,8 +117,8 @@ public class TaxiRideConfirmationDAOFileSystem implements TaxiRideConfirmationDA
             int driverID = Integer.parseInt(tokens[1]);
             int clientID = Integer.parseInt(tokens[2]);
             RideConfirmationStatus status = RideConfirmationStatus.valueOf(tokens[3]);
-            double estimatedFare = Double.parseDouble(tokens[4]);
-            double estimatedTime = Double.parseDouble(tokens[5]);
+            double estimatedFare = Double.parseDouble(tokens[4].replace(",", "."));
+            double estimatedTime = Double.parseDouble(tokens[5].replace(",", "."));
             PaymentMethod paymentMethod = PaymentMethod.valueOf(tokens[6]);
             LocalDateTime confirmationTime = LocalDateTime.parse(tokens[7]);
             String destination = tokens[8];
@@ -166,5 +167,25 @@ public class TaxiRideConfirmationDAOFileSystem implements TaxiRideConfirmationDA
             throw new TaxiRidePersistenceException("Errore nella scrittura del file taxi_rides.csv", e);
         }
     }
+    @Override
+    public void updateRideConfirmationStatus(int rideID, RideConfirmationStatus newStatus) {
+        List<TaxiRideConfirmation> allRides = findAll();
+        boolean updated = false;
+
+        for (TaxiRideConfirmation ride : allRides) {
+            if (ride.getRideID() == rideID) {
+                ride.setStatus(newStatus);
+                updated = true;
+                break;
+            }
+        }
+
+        if (!updated) {
+            throw new TaxiRidePersistenceException("Nessuna corsa trovata con rideID " + rideID);
+        }
+
+        writeAll(allRides);
+    }
+
 }
 

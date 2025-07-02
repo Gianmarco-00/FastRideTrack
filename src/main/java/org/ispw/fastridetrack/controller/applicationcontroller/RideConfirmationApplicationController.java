@@ -3,9 +3,7 @@ package org.ispw.fastridetrack.controller.applicationcontroller;
 import org.ispw.fastridetrack.bean.TaxiRideConfirmationBean;
 import org.ispw.fastridetrack.dao.DriverDAO;
 import org.ispw.fastridetrack.dao.TaxiRideConfirmationDAO;
-import org.ispw.fastridetrack.exception.DriverDAOException;
-import org.ispw.fastridetrack.exception.RideConfirmationNotFoundException;
-import org.ispw.fastridetrack.model.Driver;
+import org.ispw.fastridetrack.exception.*;
 import org.ispw.fastridetrack.model.TaxiRideConfirmation;
 import org.ispw.fastridetrack.session.SessionManager;
 import org.ispw.fastridetrack.model.enumeration.RideConfirmationStatus;
@@ -23,54 +21,67 @@ public class RideConfirmationApplicationController {
         this.driverDAO = SessionManager.getInstance().getDriverDAO();
     }
 
-    /**
-     * Restituisce tutte le richieste ride ordinate per orario di creazione.
-     */
-    public List<TaxiRideConfirmation> getPendingConfirmationsForDriver(int driverId) throws RideConfirmationNotFoundException {
-        List<TaxiRideConfirmation> requests = (List<TaxiRideConfirmation>) taxiRideConfirmationDAO.findByDriverIDandStatus(driverId, RideConfirmationStatus.PENDING);
+    private List<TaxiRideConfirmation> getPendingConfirmationsForDriver(int driverId) throws RideConfirmationNotFoundException {
+        List<TaxiRideConfirmation> requests = taxiRideConfirmationDAO.findByDriverIDandStatus(driverId, RideConfirmationStatus.PENDING);
         requests.sort(Comparator.comparing(TaxiRideConfirmation::getConfirmationTime));
         return requests;
     }
 
-    public Optional<TaxiRideConfirmationBean> getNextRideConfirmation(int driverId) throws RideConfirmationNotFoundException{
+    public Optional<TaxiRideConfirmationBean> getNextRideConfirmation(int driverId) throws RideConfirmationNotFoundException, DriverDAOException {
+        if(!checkDriverAvailability(driverId)){
+            throw new DriverUnavailableException("Driver is unavailable");
+        }
         List<TaxiRideConfirmation> requests = getPendingConfirmationsForDriver(driverId);
         if (!requests.isEmpty()) {
-            return Optional.of(TaxiRideConfirmationBean.fromModel(requests.getFirst()));  // prima richiesta in ordine FIFO
+            return Optional.of(TaxiRideConfirmationBean.fromModel(requests.getFirst()));
         } else {
             return Optional.empty();
         }
     }
 
-    /**
-     * Accetta una richiesta specifica e rifiuta tutte le altre associate al driver.
-     */
-    public void acceptRideConfirmationAndRejectOthers(int rideId, int driverId) throws DriverDAOException {
-        //SessionDataApplicationController sessionC = new SessionDataApplicationController();
-        Driver driver = SessionManager.getInstance().getLoggedDriver();
-
-        Optional<TaxiRideConfirmation> accepted = taxiRideConfirmationDAO.findById(rideId);
-
-        if (accepted.isPresent() && accepted.get().getDriver().getUserID().equals(driverId)) {
-            accepted.get().setStatus(RideConfirmationStatus.ACCEPTED);
-            accepted.ifPresent(taxiRideConfirmationDAO::update);
-            SessionManager.getInstance().setCurrentConfirmation(accepted.get());
-            driver.setAvailable(false);
-            driverDAO.updateAvailability(driverId, false);
-            SessionManager.getInstance().setLoggedDriver(driver);
-
-            List<TaxiRideConfirmation> others = (List<TaxiRideConfirmation>) taxiRideConfirmationDAO.findByDriverIDandStatus(driverId, RideConfirmationStatus.PENDING);
-            for (TaxiRideConfirmation r : others) {
-                if (!r.getRideID().equals(rideId)) {
-                    r.setStatus(RideConfirmationStatus.REJECTED);
-                    taxiRideConfirmationDAO.update(r);
-                }
-            }
-        }
+    private boolean checkDriverAvailability(int driverID) throws DriverDAOException {
+        return driverDAO.findById(driverID).isAvailable();
     }
 
-    /**
-     * Rifiuta una richiesta specifica di conferma corsa.
-     */
+    public boolean checkRideConfirmationStillPending(int rideID) throws RideConfirmationNotFoundException {
+        return taxiRideConfirmationDAO.findById(rideID)
+                .map(conf -> conf.getStatus() == RideConfirmationStatus.PENDING)
+                .orElseThrow(() -> new RideConfirmationNotFoundException(rideID));
+    }
+
+    public TaxiRideConfirmationBean acceptRideConfirmationAndRejectOthers(int rideId, int driverId) throws DriverDAOException {
+        if(!checkDriverAvailability(driverId)){
+            throw new DriverUnavailableException("Driver is unavailable");
+        }
+
+        TaxiRideConfirmation accepted = taxiRideConfirmationDAO.findById(rideId)
+                .orElseThrow(() -> new RideConfirmationNotFoundException(rideId));
+
+        if (accepted.getStatus() != RideConfirmationStatus.PENDING) {
+            throw new RideConfirmationNotPendingException("No ride confirmation found with ID: " + rideId);
+        }
+
+        if (!accepted.getDriver().getUserID().equals(driverId)) {
+            throw new DriverMismatchException("Driver mismatch for confirmation ID: " + rideId);
+        }
+
+        accepted.setStatus(RideConfirmationStatus.ACCEPTED);
+        taxiRideConfirmationDAO.update(accepted);
+
+        List<TaxiRideConfirmation> others = taxiRideConfirmationDAO.findByDriverIDandStatus(driverId, RideConfirmationStatus.PENDING);
+        for (TaxiRideConfirmation other : others) {
+            if (!other.getRideID().equals(rideId)) {
+                other.setStatus(RideConfirmationStatus.REJECTED);
+                taxiRideConfirmationDAO.update(other);
+            }
+        }
+
+        driverDAO.updateAvailability(driverId, false);
+        SessionManager.getInstance().getLoggedDriver().setAvailable(false);
+
+        return TaxiRideConfirmationBean.fromModel(accepted);
+    }
+
     public void rejectRideConfirmation(int rideId, int driverId) {
         Optional<TaxiRideConfirmation> request = taxiRideConfirmationDAO.findById(rideId);
 

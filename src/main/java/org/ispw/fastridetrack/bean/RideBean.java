@@ -3,7 +3,6 @@ package org.ispw.fastridetrack.bean;
 import org.ispw.fastridetrack.model.Ride;
 import org.ispw.fastridetrack.model.enumeration.RideStatus;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class RideBean {
@@ -13,13 +12,15 @@ public class RideBean {
     private String destination;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private BigDecimal totalPayed;
+    private Double totalPayed;
+    private Boolean clientFetched;
     private RideStatus status;
 
     // Costruttore completo
+    @SuppressWarnings("java:S107")
     public RideBean(Integer rideID, ClientBean client, DriverBean driver,
-                                    /*CoordinateBean userLocation,*/ String destination, LocalDateTime startTime,
-                    LocalDateTime endTime, BigDecimal totalPayed, RideStatus status) {
+                    String destination, LocalDateTime startTime,
+                    LocalDateTime endTime, Double totalPayed, Boolean clientFetched, RideStatus status) {
         this.rideID = rideID;
         this.driver = driver;
         this.client = client;
@@ -27,6 +28,7 @@ public class RideBean {
         this.startTime = startTime;
         this.endTime = endTime;
         this.totalPayed = totalPayed;
+        this.clientFetched = clientFetched;
         this.status = status;
     }
 
@@ -41,6 +43,7 @@ public class RideBean {
                 model.getStartTime(),
                 model.getEndTime(),
                 model.getTotalPayed(),
+                model.isClientFetched(),
                 model.getStatus()
         );
     }
@@ -54,6 +57,7 @@ public class RideBean {
                 startTime,
                 endTime,
                 totalPayed,
+                clientFetched,
                 status
         );
     }
@@ -82,12 +86,12 @@ public class RideBean {
 
     public void setEndTime(LocalDateTime endTime) {this.endTime = endTime;}
 
-    public BigDecimal getTotalPayed() {return totalPayed;}
+    public Double getTotalPayed() {return totalPayed;}
 
-    public void setTotalPayed(BigDecimal totalPayed) {this.totalPayed = totalPayed;}
+    public void setTotalPayed(Double totalPayed) {this.totalPayed = totalPayed;}
 
-    public RideStatus getStatus() {return status;}
+    public RideStatus getRideStatus() {return status;}
 
-    public void setStatus(RideStatus status) {this.status = status;}
+    public void setRideStatus(RideStatus status) {this.status = status;}
 
 }

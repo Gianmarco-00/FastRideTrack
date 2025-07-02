@@ -16,6 +16,9 @@ public class GoogleMapsAdapter implements MapService {
     private static final String API_KEY = System.getenv("GOOGLE_MAPS_API_KEY");
     private static final String STATUS_FIELD = "status";
     private final HttpClient client = HttpClient.newHttpClient();
+    private static final String VALUE = "value";
+    private static final String KEY = "&key=";
+    private static final String RESULTS = "results";
 
     @Override
     public Map calculateRoute(MapRequestBean requestBean) throws MapServiceException {
@@ -37,7 +40,7 @@ public class GoogleMapsAdapter implements MapService {
                     + "&destinations=" + encodedDestination
                     + "&mode=driving"
                     + "&language=it"
-                    + "&key=" + API_KEY;
+                    + KEY + API_KEY;
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -58,8 +61,74 @@ public class GoogleMapsAdapter implements MapService {
                     String elementStatus = element.get(STATUS_FIELD).getAsString();
 
                     if ("OK".equals(elementStatus)) {
-                        int durationSeconds = element.getAsJsonObject("duration").get("value").getAsInt();
-                        int distanceMeters = element.getAsJsonObject("distance").get("value").getAsInt();
+                        int durationSeconds = element.getAsJsonObject("duration").get(VALUE).getAsInt();
+                        int distanceMeters = element.getAsJsonObject("distance").get(VALUE).getAsInt();
+                        estimatedTimeMinutes = durationSeconds / 60.0;
+                        distanceKm = distanceMeters / 1000.0;
+                    } else {
+                        throw new MapServiceException("Errore nella risposta Distance Matrix: " + elementStatus);
+                    }
+                } else {
+                    throw new MapServiceException("Errore API Distance Matrix: " + status);
+                }
+            } else {
+                throw new MapServiceException("Errore HTTP Distance Matrix: " + response.statusCode());
+            }
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            throw new MapServiceException("Operazione interrotta durante il calcolo della distanza o tempo stimato", ie);
+        } catch (Exception e) {
+            throw new MapServiceException("Errore nel calcolo della distanza o tempo stimato", e);
+        }
+
+
+        return new Map(html, from, to, distanceKm, estimatedTimeMinutes);
+    }
+
+
+    @Override
+    public Map calculateRouteDriver(CoordinateBean startPoint, CoordinateBean endPoint) throws MapServiceException {
+        if (startPoint == null || endPoint == null) {
+            throw new MapServiceException("Punti di inizio e fine non sono presenti!");
+        }
+
+        String from = startPoint.toString();
+        String to = endPoint.toString();
+        String html = generateRouteHtml(from, to);
+        double estimatedTimeMinutes;
+        double distanceKm;
+
+        try {
+            String encodedOrigin = URLEncoder.encode(from, StandardCharsets.UTF_8);
+            String encodedDestination = URLEncoder.encode(to, StandardCharsets.UTF_8);
+            String url = "https://maps.googleapis.com/maps/api/distancematrix/json"
+                    + "?origins=" + encodedOrigin
+                    + "&destinations=" + encodedDestination
+                    + "&mode=driving"
+                    + "&language=it"
+                    + KEY + API_KEY;
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
+                String status = json.get(STATUS_FIELD).getAsString();
+
+                if ("OK".equals(status)) {
+                    JsonArray rows = json.getAsJsonArray("rows");
+                    JsonObject element = rows.get(0).getAsJsonObject()
+                            .getAsJsonArray("elements")
+                            .get(0).getAsJsonObject();
+                    String elementStatus = element.get(STATUS_FIELD).getAsString();
+
+                    if ("OK".equals(elementStatus)) {
+                        int durationSeconds = element.getAsJsonObject("duration").get(VALUE).getAsInt();
+                        int distanceMeters = element.getAsJsonObject("distance").get(VALUE).getAsInt();
                         estimatedTimeMinutes = durationSeconds / 60.0;
                         distanceKm = distanceMeters / 1000.0;
                     } else {
@@ -112,7 +181,7 @@ public class GoogleMapsAdapter implements MapService {
             String latlngParam = latitude + "," + longitude;
             String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
                     URLEncoder.encode(latlngParam, StandardCharsets.UTF_8) +
-                    "&key=" + API_KEY;
+                    KEY + API_KEY;
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -126,7 +195,7 @@ public class GoogleMapsAdapter implements MapService {
                 String status = json.get(STATUS_FIELD).getAsString();
 
                 if ("OK".equals(status)) {
-                    JsonArray results = json.getAsJsonArray("results");
+                    JsonArray results = json.getAsJsonArray(RESULTS);
                     if (results.size() > 0) {
                         JsonObject firstResult = results.get(0).getAsJsonObject();
                         return firstResult.get("formatted_address").getAsString();
@@ -157,7 +226,7 @@ public class GoogleMapsAdapter implements MapService {
         try {
             String encodedAddress = URLEncoder.encode(address, StandardCharsets.UTF_8);
             String url = "https://maps.googleapis.com/maps/api/geocode/json?address="
-                    + encodedAddress + "&key=" + API_KEY;
+                    + encodedAddress + KEY + API_KEY;
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -171,7 +240,7 @@ public class GoogleMapsAdapter implements MapService {
                 String status = json.get(STATUS_FIELD).getAsString();
 
                 if ("OK".equals(status)) {
-                    JsonArray results = json.getAsJsonArray("results");
+                    JsonArray results = json.getAsJsonArray(RESULTS);
                     if (results.size() > 0) {
                         JsonObject location = results.get(0)
                                 .getAsJsonObject()
@@ -200,13 +269,49 @@ public class GoogleMapsAdapter implements MapService {
         }
     }
 
+
+
+    @Override
+    public String getAddressFromCoordinatesString(String coordinateString) throws MapServiceException {
+        if (API_KEY == null || API_KEY.isBlank()) {
+            throw new MapServiceException("Indirizzo non disponibile: API key mancante");
+        }
+
+        try {
+            String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+                    URLEncoder.encode(coordinateString, StandardCharsets.UTF_8) +
+                    KEY + API_KEY;
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
+                String status = json.get(STATUS_FIELD).getAsString();
+
+                if ("OK".equals(status)) {
+                    JsonArray results = json.getAsJsonArray(RESULTS);
+                    if (results.size() > 0) {
+                        JsonObject firstResult = results.get(0).getAsJsonObject();
+                        return firstResult.get("formatted_address").getAsString();
+                    } else {
+                        throw new MapServiceException("Nessun indirizzo trovato per le coordinate");
+                    }
+                } else {
+                    throw new MapServiceException("Errore API Geocoding: " + status);
+                }
+            } else {
+                throw new MapServiceException("Errore HTTP Geocoding: " + response.statusCode());
+            }
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            throw new MapServiceException("Operazione interrotta durante il reverse geocoding", ie);
+        } catch (Exception e) {
+            throw new MapServiceException("Errore durante il reverse geocoding", e);
+        }
+    }
 }
-
-
-
-
-
-
-
-
-

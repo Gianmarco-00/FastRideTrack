@@ -9,16 +9,21 @@ import java.util.Properties;
 
 public class GmailAdapter implements EmailService {
 
-    private final String username;
-    private final String appPassword;
+    private String username;
+    private String appPassword;
 
     public GmailAdapter() {
         this.username = System.getenv("GMAIL_EMAIL");
         this.appPassword = System.getenv("GMAIL_APP_PASSWORD");
 
+        // Fallback per i test
+        if (this.username == null) this.username = System.getProperty("GMAIL_EMAIL");
+        if (this.appPassword == null) this.appPassword = System.getProperty("GMAIL_APP_PASSWORD");
+
         if (username == null || appPassword == null) {
             throw new IllegalStateException("Variabili d'ambiente GMAIL_EMAIL o GMAIL_APP_PASSWORD mancanti.");
         }
+
     }
 
     @Override

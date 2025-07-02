@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.ispw.fastridetrack.controller.guicontroller.DriverNoPendingRideConfirmationGUI">
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ispw.fastridetrack.controller.guicontroller.DriverNoPendingRideConfirmationGUI">
 
     <children>
 
@@ -20,37 +17,20 @@
             </image>
         </ImageView>
 
-        <TextField fx:id="driverUsernameField" editable="false"
-                   layoutX="91.0" layoutY="261.0"
-                   style="-fx-background-color: transparent;">
-            <font>
-                <Font name="System Bold" size="18.0" />
-            </font>
-        </TextField>
+        <Button fx:id="refreshButton" layoutX="693.0" layoutY="522.0" mnemonicParsing="false" onAction="#onRefresh" prefHeight="37.0" prefWidth="230.0" style="-fx-background-color: transparent;" />
 
-        <Button fx:id="refreshButton" layoutX="693.0" layoutY="522.0"
-                mnemonicParsing="false" onAction="#onRefresh"
-                prefHeight="37.0" prefWidth="230.0"
-                style="-fx-background-color: transparent;" />
+        <Button fx:id="pendingRequestButton" layoutX="88.0" layoutY="476.0" mnemonicParsing="false" onAction="#onPendingRequests" prefHeight="46.0" prefWidth="267.0" style="-fx-background-color: transparent;" />
 
-        <Button fx:id="pendingRequestButton" layoutX="88.0" layoutY="476.0"
-                mnemonicParsing="false" onAction="#onPendingRequests"
-                prefHeight="46.0" prefWidth="267.0"
-                style="-fx-background-color: transparent;" />
+        <Button fx:id="CurrentRideButton" layoutX="88.0" layoutY="434.0" mnemonicParsing="false" onAction="#onCurrentRide" prefHeight="40.0" prefWidth="267.0" style="-fx-background-color: transparent;" />
 
-        <Button fx:id="CurrentRideButton" layoutX="88.0" layoutY="434.0"
-                mnemonicParsing="false" onAction="#onCurrentRide"
-                prefHeight="40.0" prefWidth="267.0"
-                style="-fx-background-color: transparent;" />
+        <Button fx:id="myAccountButton" layoutX="91.0" layoutY="388.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="267.0" style="-fx-background-color: transparent;" />
 
-        <Button fx:id="myAccountButton" layoutX="91.0" layoutY="388.0"
-                mnemonicParsing="false" prefHeight="40.0" prefWidth="267.0"
-                style="-fx-background-color: transparent;" />
-
-        <Button fx:id="homeButton" layoutX="91.0" layoutY="348.0"
-                mnemonicParsing="false" onAction="#onDriverHome"
-                prefHeight="46.0" prefWidth="267.0"
-                style="-fx-background-color: transparent;" />
+        <Button fx:id="homeButton" layoutX="91.0" layoutY="348.0" mnemonicParsing="false" onAction="#onDriverHome" prefHeight="46.0" prefWidth="267.0" style="-fx-background-color: transparent;" />
+      <Label fx:id="driverUsernameField" layoutX="87.0" layoutY="270.0" prefHeight="27.0" prefWidth="154.0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
 
     </children>
 </AnchorPane>

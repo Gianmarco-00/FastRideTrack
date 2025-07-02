@@ -5,7 +5,6 @@ import org.ispw.fastridetrack.exception.DriverDAOException;
 import org.ispw.fastridetrack.model.Coordinate;
 import org.ispw.fastridetrack.model.Driver;
 
-
 import java.util.List;
 
 public interface DriverDAO {

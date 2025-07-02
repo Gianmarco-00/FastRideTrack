@@ -1,10 +1,10 @@
 package org.ispw.fastridetrack.controller.guicontroller;
 
 import javafx.fxml.FXML;
+import org.ispw.fastridetrack.controller.applicationcontroller.ApplicationFacade;
 import org.ispw.fastridetrack.exception.FXMLLoadException;
 
-import static org.ispw.fastridetrack.util.ViewPath.HOMEPAGE_FXML;
-import static org.ispw.fastridetrack.util.ViewPath.SIGNUPCLIENT_FXML;
+import static org.ispw.fastridetrack.util.ViewPath.*;
 
 public class SignUpAsGUIController {
 
@@ -25,8 +25,8 @@ public class SignUpAsGUIController {
 
     @FXML
     public void onDriverSignUp() throws FXMLLoadException {
-        // Cambio scena a ?????.fxml per il driver (quella di Alex)
-        SceneNavigator.switchTo("/org/ispw/fastridetrack/views/Sign Up.fxml", "Sign Up Driver");
+        // Cambio scena a DriverSignUp.fxml per il driver
+        SceneNavigator.switchTo(DRIVERSIGNUP_FXML, "Sign Up Driver");
     }
 
     @FXML

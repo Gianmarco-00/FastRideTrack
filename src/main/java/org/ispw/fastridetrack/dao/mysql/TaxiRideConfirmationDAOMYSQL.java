@@ -5,14 +5,15 @@ import org.ispw.fastridetrack.dao.DriverDAO;
 import org.ispw.fastridetrack.dao.TaxiRideConfirmationDAO;
 import org.ispw.fastridetrack.exception.DriverDAOException;
 import org.ispw.fastridetrack.exception.TaxiRidePersistenceException;
+import org.ispw.fastridetrack.exception.TaxiRideRetrievalException;
 import org.ispw.fastridetrack.model.*;
 import org.ispw.fastridetrack.model.Driver;
 import org.ispw.fastridetrack.model.enumeration.PaymentMethod;
 import org.ispw.fastridetrack.model.enumeration.RideConfirmationStatus;
 
+import java.util.List;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class TaxiRideConfirmationDAOMYSQL implements TaxiRideConfirmationDAO {
@@ -122,7 +123,6 @@ public class TaxiRideConfirmationDAOMYSQL implements TaxiRideConfirmationDAO {
         }
     }
 
-
     @Override
     public boolean exists(int rideID) {
         String sql = "SELECT 1 FROM taxi_rides WHERE rideID = ?";
@@ -136,14 +136,20 @@ public class TaxiRideConfirmationDAOMYSQL implements TaxiRideConfirmationDAO {
         }
     }
 
+
     @Override
     public List<TaxiRideConfirmation> findByDriverIDandStatus(int driverID, RideConfirmationStatus status) {
-        List<TaxiRideConfirmation> requests = new ArrayList<TaxiRideConfirmation>();
+        List<TaxiRideConfirmation> requests = new ArrayList<>();
         ClientDAOMYSQL clientDAO = new ClientDAOMYSQL(connection);
-        //RideRequestDAOMYSQL rideRequest = new RideRequestDAOMYSQL(connection,  clientDAO);
         DriverDAOMYSQL driverDAO = new DriverDAOMYSQL(connection);
 
-        String sql = "SELECT * FROM taxi_rides WHERE driverID = ? AND rideConfirmationStatus = ? ORDER BY confirmationTime ASC";
+        String sql = """
+    SELECT rideID, clientID, driverID, destination, rideConfirmationStatus,
+           confirmationTime, estimatedFare, estimatedTime, paymentMethod
+    FROM taxi_rides
+    WHERE driverID = ? AND rideConfirmationStatus = ?
+    ORDER BY confirmationTime ASC
+    """;
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, driverID);
@@ -151,28 +157,46 @@ public class TaxiRideConfirmationDAOMYSQL implements TaxiRideConfirmationDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    TaxiRideConfirmation request = new TaxiRideConfirmation();
-                    request.setRideID(rs.getInt("rideID"));
-                    request.setClient(clientDAO.findById(rs.getInt("clientID")));
-                    request.setDriver(driverDAO.findById(rs.getInt("driverID")));
-                    request.setDestination(rs.getString("destination"));
-                    request.setStatus(RideConfirmationStatus.valueOf(rs.getString("rideConfirmationStatus")));
-                    request.setConfirmationTime(rs.getTimestamp("confirmationTime").toLocalDateTime());
-                    request.setEstimatedFare(rs.getDouble("estimatedFare"));
-                    request.setEstimatedTime(rs.getDouble("estimatedTime"));
-                    request.setPaymentMethod(PaymentMethod.valueOf(rs.getString("paymentMethod")));
-
+                    TaxiRideConfirmation request = buildTaxiRideConfirmation(rs, clientDAO, driverDAO);
                     requests.add(request);
                 }
-            } catch (DriverDAOException e) {
-                throw new RuntimeException(e);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException("Errore nel recupero delle ride request", e);
+        } catch (SQLException | DriverDAOException e) {
+            throw new TaxiRideRetrievalException("Error while fetching ride confirmations", e);
         }
         return requests;
     }
-}
 
+    private TaxiRideConfirmation buildTaxiRideConfirmation(ResultSet rs, ClientDAOMYSQL clientDAO, DriverDAOMYSQL driverDAO)
+            throws SQLException, DriverDAOException {
+        TaxiRideConfirmation request = new TaxiRideConfirmation();
+        request.setRideID(rs.getInt("rideID"));
+        request.setClient(clientDAO.findById(rs.getInt("clientID")));
+        request.setDriver(driverDAO.findById(rs.getInt("driverID")));
+        request.setDestination(rs.getString("destination"));
+        request.setStatus(RideConfirmationStatus.valueOf(rs.getString("rideConfirmationStatus")));
+        Timestamp confirmationTimestamp = rs.getTimestamp("confirmationTime");
+        if (confirmationTimestamp != null) {
+            request.setConfirmationTime(confirmationTimestamp.toLocalDateTime());
+        }
+        request.setEstimatedFare(rs.getDouble("estimatedFare"));
+        request.setEstimatedTime(rs.getDouble("estimatedTime"));
+        request.setPaymentMethod(PaymentMethod.valueOf(rs.getString("paymentMethod")));
+        return request;
+    }
+
+    public void updateRideConfirmationStatus(int rideId, RideConfirmationStatus newStatus) {
+        String sql = "UPDATE taxi_rides SET rideConfirmationStatus = ? WHERE rideID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, newStatus.name());
+            stmt.setInt(2, rideId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new TaxiRidePersistenceException("Errore durante l'aggiornamento dello stato della corsa con rideID " + rideId, e);
+        }
+    }
+
+
+}
 
 

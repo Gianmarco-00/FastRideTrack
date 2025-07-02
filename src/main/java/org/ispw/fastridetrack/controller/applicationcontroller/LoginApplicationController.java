@@ -9,16 +9,15 @@ import org.ispw.fastridetrack.model.enumeration.UserType;
 import org.ispw.fastridetrack.dao.ClientDAO;
 import org.ispw.fastridetrack.dao.DriverDAO;
 
+
 public class LoginApplicationController {
 
     private final ClientDAO clientDAO;
     private final DriverDAO driverDAO;
 
     public LoginApplicationController() {
-        // Inizializzo il SessionManager (solo se non già inizializzato)
         SessionManager.init();
 
-        // Ottengo i DAO dalla SessionFactory corretta (persistente o in-memory)
         SessionManager sessionManager = SessionManager.getInstance();
         this.clientDAO = sessionManager.getClientDAO();
         this.driverDAO = sessionManager.getDriverDAO();
@@ -38,7 +37,6 @@ public class LoginApplicationController {
         SessionManager.getInstance().setLoggedClient(client);
         return true;
     }
-
 
     // Validazione credenziali per il driver
     public boolean validateDriverCredentials(String username, String password, UserType userType) throws DriverDAOException{

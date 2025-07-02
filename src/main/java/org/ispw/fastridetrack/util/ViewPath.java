@@ -1,7 +1,6 @@
 package org.ispw.fastridetrack.util;
 
 public class ViewPath {
-
     private ViewPath() {
         throw new UnsupportedOperationException("Utility class");
     }
@@ -19,4 +18,5 @@ public class ViewPath {
     public static final String DRIVERPENDINGREQUEST_FXML =  "/org/ispw/fastridetrack/views/DriverPendingRequest.fxml";
     public static final String DRIVERNOREQUEST_FXML = "/org/ispw/fastridetrack/views/DriverNoPendingRequest.fxml";
     public static final String DRIVERCURRENTRIDE_FXML = "/org/ispw/fastridetrack/views/DriverCurrentRide.fxml";
+    public static final String DRIVERSIGNUP_FXML="/org/ispw/fastridetrack/views/DriverSignUp.fxml";
 }

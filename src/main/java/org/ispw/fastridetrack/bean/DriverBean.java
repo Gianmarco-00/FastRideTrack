@@ -40,21 +40,17 @@ public class DriverBean extends UserBean {
         return vehicleInfo;
     }
 
-
     public String getVehiclePlate() {
         return vehiclePlate;
     }
-
 
     public String getAffiliation() {
         return affiliation;
     }
 
-
     public boolean isAvailable() {
         return available;
     }
-
 
     public static DriverBean fromModel(Driver driver) {
         if (driver == null) return null;

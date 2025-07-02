@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@SuppressWarnings("java:S6548")
 public class SingletonDBSession {
     private Connection connection;
 
@@ -27,7 +28,6 @@ public class SingletonDBSession {
             System.out.println("[DEBUG] Connessione stabilita.");
         } catch (SQLException e) {
             System.err.println("[ERRORE] Connessione MySQL fallita:");
-            e.printStackTrace();
             throw new DatabaseConnectionException("Connessione al database non riuscita", e);
         }
     }
@@ -65,7 +65,6 @@ public class SingletonDBSession {
                 System.out.println("[DEBUG] Connessione MySQL chiusa.");
             } catch (SQLException e) {
                 System.err.println("[WARN] Errore durante la chiusura della connessione:");
-                e.printStackTrace();
             }
         }
     }
@@ -76,9 +75,6 @@ public class SingletonDBSession {
         }
     }
 }
-
-
-
 
 
 

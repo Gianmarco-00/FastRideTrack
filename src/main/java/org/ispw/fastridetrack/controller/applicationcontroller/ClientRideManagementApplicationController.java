@@ -37,6 +37,5 @@ public class ClientRideManagementApplicationController {
         // Invio notifica al driver
         emailService.sendEmail(email.getRecipient(), email.getSubject(), email.getBody());
     }
+
 }
-
-

@@ -29,14 +29,9 @@ public class DriverDAOMYSQL implements DriverDAO {
     }
 
     @Override
-    public void save(Driver driver) throws DriverDAOException {
-        String sql = """
-                INSERT INTO driver (
-                    userId, username, password, name, email, phonenumber,
-                    latitude, longitude, vehicleInfo, vehiclePlate,
-                    affiliation, available
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """;
+    public void save(Driver driver) throws DriverDAOException{
+        String sql = "INSERT INTO driver (userID, username, password, name, email, phonenumber, latitude, longitude, vehicleInfo, vehiclePlate, affiliation, available) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, driver.getUserID());
             stmt.setString(2, driver.getUsername());
@@ -255,6 +250,7 @@ public class DriverDAOMYSQL implements DriverDAO {
         return baseFare + (costPerKm * distanceKm);
     }
 
+    // Haversine formula for distance
     private double calculateDistanceKm(double lat1, double lon1, double lat2, double lon2) {
         final int EARTH_RADIUS_KM = 6371;
         double dLat = Math.toRadians(lat2 - lat1);

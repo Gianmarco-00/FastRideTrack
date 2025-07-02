@@ -1,11 +1,11 @@
 package org.ispw.fastridetrack.model;
 
 import org.ispw.fastridetrack.model.enumeration.RideStatus;
+import org.ispw.fastridetrack.model.state.*;
 
-import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 
+@SuppressWarnings("java:S107")
 public class Ride {
     private Integer rideID;
     private Client client;
@@ -13,13 +13,17 @@ public class Ride {
     private String destination;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private BigDecimal totalPayed;
+    private Double totalPayed;
+    private boolean clientFetched;
     private RideStatus status;
 
-    public Ride() {}
+    private RideState rideState;
+
+    public Ride() {
+    }
 
     public Ride(Integer rideID, Client client, Driver driver, String destination,
-                LocalDateTime startTime, LocalDateTime endTime, BigDecimal totalPayed, RideStatus status) {
+                LocalDateTime startTime, LocalDateTime endTime, Double totalPayed,Boolean clientFetched, RideStatus status) {
         this.rideID = rideID;
         this.client = client;
         this.driver = driver;
@@ -27,19 +31,43 @@ public class Ride {
         this.startTime = startTime;
         this.endTime = endTime;
         this.totalPayed = totalPayed;
+        this.clientFetched = clientFetched;
         this.status = status;
+
+        setStatusAndState(status);
+    }
+
+    public Location getMapStartPoint() {
+        return rideState.getMapStartPoint(toContext());
+    }
+
+    public Location getMapEndPoint() {
+        return rideState.getMapEndPoint(toContext());
+    }
+
+    public void markClientFound() {
+        this.rideState = rideState.markClientFound();
+        this.status = rideState.getRideStatus();
     }
 
     public void startRide() {
-        this.startTime = LocalDateTime.now();
-        this.status = RideStatus.ONGOING;
+        this.rideState = rideState.startRide();
+        this.status = rideState.getRideStatus();
     }
 
-    public void finishRide(BigDecimal fare) {
+    public void finishRide(Double totalPayed) {
+        this.rideState = rideState.markFinished(totalPayed);
+        this.totalPayed = totalPayed;
         this.endTime = LocalDateTime.now();
-        Duration rideDuration = Duration.between(startTime, endTime);
-        this.totalPayed = fare;
-        this.status = RideStatus.FINISHED;
+        this.status = rideState.getRideStatus();
+    }
+
+    private RideContext toContext() {
+        return new RideContext(
+                driver.getCoordinate(),
+                client.getCoordinate(),
+                destination
+        );
     }
 
     public Integer getRideID() {return rideID;}
@@ -66,11 +94,28 @@ public class Ride {
 
     public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
 
-    public BigDecimal getTotalPayed() { return totalPayed;}
+    public Double getTotalPayed() { return totalPayed;}
 
-    public void setTotalPayed(BigDecimal totalPayed) {this.totalPayed = totalPayed;}
+    public void setTotalPayed(Double totalPayed) {this.totalPayed = totalPayed;}
+
+    public void setClientFetched(Boolean clientFetched) {this.clientFetched = clientFetched;}
+
+    public boolean isClientFetched() {
+        return clientFetched;
+    }
 
     public RideStatus getStatus() {return status;}
 
-    public void setStatus(RideStatus status) {this.status = status;}
+    public  void setStatus(RideStatus status) {this.status = status;}
+
+    public void setStatusAndState(RideStatus status) {
+        this.status = status;
+        switch (status){
+            case INITIATED -> this.rideState = new InitiatedState();
+            case CLIENT_LOCATED ->  this.rideState = new ClientLocatedState();
+            case ONGOING ->  this.rideState = new OnGoingState();
+            case FINISHED -> this.rideState = new FinishedState();
+        }
+    }
+
 }

@@ -134,7 +134,13 @@ public class DriverDAOInMemory implements DriverDAO {
 
     @Override
     public void updateAvailability(int driverId, boolean isAvailable) {
-
+        for (Driver driver : driverMap.values()) {
+            if (driver.getUserID() == driverId) {
+                driver.setAvailable(isAvailable);
+                return;
+            }
+        }
+        System.err.println("Driver con ID " + driverId + " non trovato.");
     }
 
     // Haversine formula per distanza in km tra due coordinate

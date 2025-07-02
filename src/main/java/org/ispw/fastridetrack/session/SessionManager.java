@@ -4,13 +4,10 @@ import org.ispw.fastridetrack.adapter.EmailService;
 import org.ispw.fastridetrack.adapter.GmailAdapter;
 import org.ispw.fastridetrack.adapter.GoogleMapsAdapter;
 import org.ispw.fastridetrack.adapter.MapService;
-import org.ispw.fastridetrack.controller.applicationcontroller.DriverMatchingApplicationController;
 import org.ispw.fastridetrack.dao.*;
 import org.ispw.fastridetrack.dao.mysql.SingletonDBSession;
 import org.ispw.fastridetrack.model.Client;
 import org.ispw.fastridetrack.model.Driver;
-import org.ispw.fastridetrack.model.Ride;
-import org.ispw.fastridetrack.model.TaxiRideConfirmation;
 
 public class SessionManager {
 
@@ -18,7 +15,6 @@ public class SessionManager {
     private final SessionFactory sessionFactory;
     private Client loggedClient;
     private Driver loggedDriver;
-    private DriverSessionContext driverSessionContext;
 
     private SessionManager() {
         // Carico la configurazione dalla variabile d'ambiente
@@ -37,8 +33,6 @@ public class SessionManager {
         this.mapService = new GoogleMapsAdapter();
         this.emailService = new GmailAdapter();
 
-        //Inizializzazione contesto temporaneo
-        this.driverSessionContext = new DriverSessionContext();
     }
 
 
@@ -87,21 +81,6 @@ public class SessionManager {
         this.loggedDriver = driver;
     }
 
-    public DriverSessionContext getDriverSessionContext() { return driverSessionContext; }
-
-    public void setDriverSessionContext(TaxiRideConfirmation confirmation, Ride ride) {
-        this.driverSessionContext.setCurrentConfirmation(confirmation);
-        this.driverSessionContext.setCurrentRide(ride);
-    }
-
-    public void setCurrentConfirmation(TaxiRideConfirmation confirmation) {
-        this.driverSessionContext.setCurrentConfirmation(confirmation);
-    }
-
-    public void setCurrentRide(Ride ride) {
-        this.driverSessionContext.setCurrentRide(ride);
-    }
-
     // === CLEAR SESSION ===
     public void clearSession() {
         System.out.println("Sessione utente terminata.");
@@ -127,6 +106,10 @@ public class SessionManager {
             SingletonDBSession.reset();
             System.out.println("Connessione DB chiusa e singleton resettato.");
         }
+    }
+
+    public static void reset(){
+        instance = null;
     }
 
 }

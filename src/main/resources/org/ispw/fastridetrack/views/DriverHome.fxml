@@ -7,6 +7,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
@@ -36,24 +37,59 @@
 
         <Button fx:id="logoutButton" layoutX="87.0" layoutY="607.0" mnemonicParsing="false" onAction="#onLogout" prefHeight="42.0" prefWidth="266.0" style="-fx-background-color: transparent;" />
 
-        <TextField fx:id="driverUsername" editable="false" layoutX="101.0" layoutY="276.0" style="-fx-background-color: transparent;">
-            <font>
-                <Font name="System Bold" size="18.0" />
-            </font>
-        </TextField>
-
         <WebView fx:id="mapWebView" layoutX="384.0" layoutY="137.0" prefHeight="539.0" prefWidth="846.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#dadada" height="198.0" layoutX="930.0" layoutY="465.0" stroke="#dadada" strokeType="INSIDE" width="289.0" />
-      <VBox alignment="TOP_LEFT" layoutX="945.0" layoutY="480.0" spacing="8.0">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#dadada" height="177.0" layoutX="930.0" layoutY="486.0" stroke="#dadada" strokeType="INSIDE" width="289.0" />
+      <Rectangle fx:id="activeRideBlock" arcHeight="5.0" arcWidth="5.0" fill="#29bbbb" height="40.0" layoutX="930.0" layoutY="454.0" stroke="#dadada" strokeType="INSIDE" width="289.0" />
+      <VBox fx:id="finderBox" alignment="TOP_LEFT" layoutX="939.0" layoutY="495.0" prefHeight="155.0" prefWidth="266.0" spacing="8.0" visible="false">
          <children>
             <Label style="-fx-text-fill: #a0a0a0; -fx-font-size: 12px; -fx-font-weight: bold;" text="STARTING POINT" />
-            <TextField fx:id="startpointField" prefWidth="260.0" text="My current location" />
+            <TextField fx:id="startpointField" editable="false" prefWidth="260.0" text="My current location" />
             <Separator prefWidth="260.0" />
             <Label style="-fx-text-fill: #a0a0a0; -fx-font-size: 12px; -fx-font-weight: bold;" text="END POINT" />
-            <TextField fx:id="destinationField" prefWidth="260.0" promptText="Destination" />
-            <Button fx:id="routeSetupButton" prefHeight="25.0" prefWidth="258.0" style="-fx-background-color: #29BBBB; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 20;" text="Setup route" />
+            <TextField fx:id="destinationField" editable="false" prefWidth="260.0" promptText="Destination" />
+            <Button fx:id="routeSetupButton" prefHeight="25.0" prefWidth="258.0" style="-fx-background-color: #29BBBB; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 20;" text="Go back to confirmation" />
          </children>
       </VBox>
+      <HBox fx:id="rideActiveBox" alignment="CENTER_LEFT" layoutX="938.0" layoutY="452.0" prefHeight="42.0" prefWidth="274.0" spacing="15.0" visible="false">
+         <children>
+            <Label text="Ride active:" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="rideStatusLabel" prefHeight="20.0" prefWidth="139.0" text="locating client" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <Label fx:id="noConfirmationLabel" layoutX="999.0" layoutY="463.0" prefHeight="20.0" prefWidth="151.0" text="No current active ride" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <VBox fx:id="noConfirmationBox" alignment="CENTER" layoutX="930.0" layoutY="505.0" prefHeight="139.0" prefWidth="289.0">
+         <children>
+            <Label alignment="CENTER" prefHeight="18.0" prefWidth="251.0" text="Try to find pending">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" prefHeight="21.0" prefWidth="251.0" text="ride confirmations">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#dadada" height="36.0" stroke="#dadada" strokeType="INSIDE" width="289.0" />
+            <Button fx:id="pendingConfirmationButton" onAction="#onViewConfirmations" prefHeight="25.0" prefWidth="258.0" style="-fx-background-color: #29BBBB; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 20;" text="View pending requests" />
+         </children>
+      </VBox>
+      <Label fx:id="driverUsername" layoutX="87.0" layoutY="270.0" prefHeight="27.0" prefWidth="154.0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
 
     </children>
 </AnchorPane>

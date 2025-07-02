@@ -1,9 +1,12 @@
 package org.ispw.fastridetrack.controller.guicontroller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import org.ispw.fastridetrack.controller.applicationcontroller.ApplicationFacade;
 import org.ispw.fastridetrack.exception.FXMLLoadException;
 
 import java.net.URL;
@@ -21,27 +24,52 @@ public class SignUpGUIController implements Initializable {
     @FXML public TextField emailField;
     @FXML private ChoiceBox<String> userTypeChoiceBox;
 
+    @FXML private AnchorPane rootPane;
+
     // Facade iniettata da SceneNavigator
     @SuppressWarnings("java:S1104") // Field injection is intentional for SceneNavigator
     private ApplicationFacade facade;
 
-    // Setter usato da SceneNavigator per iniettare il facade
     public void setFacade(ApplicationFacade facade) {
         this.facade = facade;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Inizializzo solo con "Client"
         userTypeChoiceBox.getItems().add("Client");
         userTypeChoiceBox.setValue("Client");
 
-        // Restringo phoneNumberField ai numeri
         phoneNumberField.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.matches("\\d*")) {
                 phoneNumberField.setText(newText.replaceAll("[^\\d]", ""));
             }
         });
+
+        // Disabilito temporaneamente i campi per evitare focus automatico
+        firstNameField.setDisable(true);
+        lastNameField.setDisable(true);
+        usernameField.setDisable(true);
+        passwordField.setDisable(true);
+        phoneNumberField.setDisable(true);
+        emailField.setDisable(true);
+        userTypeChoiceBox.setDisable(true);
+
+        Platform.runLater(() -> {
+            // Togli il focus da ogni campo mettendolo sul rootPane
+            rootPane.requestFocus();
+
+            // Riabilita i campi subito dopo
+            Platform.runLater(() -> {
+                firstNameField.setDisable(false);
+                lastNameField.setDisable(false);
+                usernameField.setDisable(false);
+                passwordField.setDisable(false);
+                phoneNumberField.setDisable(false);
+                emailField.setDisable(false);
+                userTypeChoiceBox.setDisable(false);
+            });
+        });
+
     }
 
     @FXML
@@ -51,7 +79,6 @@ public class SignUpGUIController implements Initializable {
 
     @FXML
     private void onSignUp() throws FXMLLoadException {
-        // Qui posso anche validare i campi e poi ritornare alla schermata di homepage per effettuare il sign in
         SceneNavigator.switchTo(HOMEPAGE_FXML, "Homepage");
     }
 }

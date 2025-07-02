@@ -35,9 +35,8 @@ public class TaxiRideConfirmationBean {
         this.confirmationTime = confirmationTime;
     }
 
-    public TaxiRideConfirmationBean() {}
 
-
+    // Getter e setter aggiornati
     public Integer getRideID() {
         return rideID;
     }
@@ -106,8 +105,8 @@ public class TaxiRideConfirmationBean {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public void setPaymentMethod(PaymentMethod paymentStatus) {
+        this.paymentMethod = paymentStatus;
     }
 
     public LocalDateTime getConfirmationTime() {
@@ -152,9 +151,10 @@ public class TaxiRideConfirmationBean {
         );
     }
 
-    // Imposto lo stato su "PENDING"
+    // Imposta lo stato su "PENDING"
     public void markPending() {
         this.status = RideConfirmationStatus.valueOf("PENDING");
     }
+
 }
 
