@@ -153,7 +153,6 @@ public class DriverCliController {
         System.out.println("Next ride confirmation:");
         System.out.println("Ride ID: " + conf.getRideID());
         System.out.println("Client: " + conf.getClient().getName());
-        System.out.println("Pickup location: " + conf.getUserLocation());
         System.out.println("Destination: " + conf.getDestination());
         System.out.printf("Estimated fare: €%.2f%n", conf.getEstimatedFare());
         System.out.printf("Estimated time: %.2f minutes%n", conf.getEstimatedTime());

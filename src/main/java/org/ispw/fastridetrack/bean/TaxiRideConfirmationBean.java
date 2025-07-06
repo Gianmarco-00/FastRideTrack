@@ -81,8 +81,9 @@ public class TaxiRideConfirmationBean {
         return status;
     }
 
-    public void setStatus(RideConfirmationStatus status){this.status = status;}
-
+    public void setStatus(RideConfirmationStatus status) {
+        this.status = status;
+    }
 
     public Double getEstimatedFare() {
         return estimatedFare;
