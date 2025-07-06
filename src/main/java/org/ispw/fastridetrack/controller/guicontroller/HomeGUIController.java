@@ -117,30 +117,16 @@ public class HomeGUIController implements Initializable {
                 Thread.currentThread().interrupt(); // re-set interrupt flag
                 Platform.runLater(() -> {
                     showAlert("Operation interrupted. Loading default map.");
-                    loadMapWithDefaultLocation();
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     showAlert("Unable to retrieve location. Loading default map.");
-                    loadMapWithDefaultLocation();
                 });
             }
 
         }).start();
     }
 
-    private void loadMapWithDefaultLocation() {
-        Platform.runLater(() -> {
-            WebEngine engine = mapWebView.getEngine();
-            engine.setJavaScriptEnabled(true);
-            URL url = getClass().getResource("/org/ispw/fastridetrack/html/map.html");
-            if (url != null) {
-                engine.load(url.toExternalForm());
-            } else {
-                showAlert("map.html resource file not found.");
-            }
-        });
-    }
 
     @FXML
     private void onCheckDriver() throws FXMLLoadException {
