@@ -2,7 +2,7 @@ package org.ispw.fastridetrack.bean;
 
 import org.ispw.fastridetrack.model.enumeration.UserType;
 
-public class UserBean {
+public abstract class UserBean {
 
     private String username;
     private String password;
