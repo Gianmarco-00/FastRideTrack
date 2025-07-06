@@ -205,8 +205,8 @@ public class MyWalletGUIController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 }
+
 
 
 

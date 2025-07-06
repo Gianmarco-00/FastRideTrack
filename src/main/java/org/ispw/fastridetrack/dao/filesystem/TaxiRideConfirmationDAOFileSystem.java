@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class TaxiRideConfirmationDAOFileSystem implements TaxiRideConfirmationDAO {
 
     private static final String FILE_PATH = "src/data/taxi_rides.csv";
-
     private final ClientDAOFileSystem clientDAOFileSystem;
     private final DriverDAOFileSystem driverDAOFileSystem;
 
