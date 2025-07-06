@@ -1,7 +1,6 @@
 package org.ispw.fastridetrack.controller.guicontroller;
 
 import javafx.scene.control.Alert;
-import org.ispw.fastridetrack.controller.applicationcontroller.ApplicationFacade;
 import org.ispw.fastridetrack.exception.FXMLLoadException;
 import org.ispw.fastridetrack.util.DriverSessionContext;
 

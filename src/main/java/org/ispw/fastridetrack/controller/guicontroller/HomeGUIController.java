@@ -35,7 +35,7 @@ public class HomeGUIController implements Initializable {
     @FXML private Label welcomeLabel;
     @FXML private WebView mapWebView;
 
-    private CoordinateBean currentLocation = new CoordinateBean(40.8518, 14.2681); // Default Napoli centro
+    private CoordinateBean currentLocation;
 
     // Facade iniettata intenzionalmente da SceneNavigator
     @SuppressWarnings("java:S1104")
