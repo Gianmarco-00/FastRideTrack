@@ -15,7 +15,7 @@ public abstract class UserBean {
     private double longitude;
 
     @SuppressWarnings("java:S107")
-    public UserBean(String username, String password, UserType userType, Integer userID,
+    protected UserBean(String username, String password, UserType userType, Integer userID,
                     String name, String email, String phoneNumber, double latitude, double longitude) {
         this.username = username;
         this.password = password;
