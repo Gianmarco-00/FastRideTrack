@@ -11,7 +11,6 @@ public interface TaxiRideConfirmationDAO {
     Optional<TaxiRideConfirmation> findById(int rideID);
     void update(TaxiRideConfirmation ride);
     boolean exists(int rideID);
-
     List<TaxiRideConfirmation> findByDriverIDandStatus(int driverID, RideConfirmationStatus status);
     void updateRideConfirmationStatus(int rideId, RideConfirmationStatus newStatus);
 

@@ -117,7 +117,7 @@ public class RideDAOMYSQL implements RideDAO {
             if (total != null) {
                 stmt.setDouble(3, total);
             } else {
-                stmt.setNull(3, Types.DOUBLE); // Usa il tipo SQL corretto
+                stmt.setNull(3, Types.DOUBLE); // Uso il tipo SQL corretto
             }
 
             stmt.setInt(4, ride.getRideID());

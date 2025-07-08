@@ -2,6 +2,8 @@ package org.ispw.fastridetrack.model.state;
 
 import org.ispw.fastridetrack.model.Coordinate;
 
+// Nota: RideContext viene utilizzato per evitare dipendenze circolari
+//       tra il contesto Ride e i suoi stati concreti.
 
 public class RideContext {
     private final Coordinate driverCoord;
